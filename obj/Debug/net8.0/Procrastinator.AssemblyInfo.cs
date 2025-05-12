@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Procrastinator")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f541fe493d3c203b6c874e7723e83d7e2144c889")]
 [assembly: System.Reflection.AssemblyProductAttribute("Procrastinator")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Procrastinator")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
