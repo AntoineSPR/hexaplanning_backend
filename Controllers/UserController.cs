@@ -6,18 +6,16 @@ using Procrastinator.Services;
 
 namespace Procrastinator.Controllers
 {
-    public class UserController
-    {
         [Route("[controller]")]
         [Authorize]
         [ApiController]
-        public class UsersController : ControllerBase
+        public class UserController : ControllerBase
         {
 
             private readonly AuthService authService;
             private readonly UserService userService;
 
-            public UsersController(
+            public UserController(
                 AuthService authService,
                 UserService userService
             )
@@ -102,5 +100,4 @@ namespace Procrastinator.Controllers
                 return Ok(user);
             }
         }
-    }
 }
