@@ -38,7 +38,7 @@ void ConfigureServices(IServiceCollection services)
     // Database Context (Entity Framework Core ORM)
     services.AddDbContext<DataContext>(options =>
     {
-        options.UseNpgsql(Env.CONNECTION_STRING);
+        options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
     });
     {
         ConfigureCors(services);
@@ -206,8 +206,6 @@ void ConfigureAuthentication(IServiceCollection services)
 #endregion
 
 #region Middleware
-void ConfigureMiddlewarePipeline(WebApplication app)
-{
     void ConfigureMiddlewarePipeline(WebApplication app)
     {
         // Configure localization for supported cultures
@@ -248,9 +246,7 @@ void ConfigureMiddlewarePipeline(WebApplication app)
         // Enable authorization
         app.UseAuthorization();
 
-        // Map controllers
-        app.MapControllers();
-
+    // Map controllers
+    app.MapControllers();
     }
-}
 #endregion
