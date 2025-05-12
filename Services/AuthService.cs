@@ -1,0 +1,167 @@
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Procrastinator.Context;
+using Procrastinator.Models;
+using Procrastinator.Utilities;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+
+namespace Procrastinator.Services
+{
+    public class AuthService
+    {
+        private readonly DataContext context;
+        private readonly UserManager<UserApp> userManager;
+
+        public AuthService(
+            DataContext context,
+            UserManager<UserApp> userManager
+        )
+        {
+            this.context = context;
+            this.userManager = userManager;
+        }
+
+        public async Task<UserResponseDTO?> Register(UserCreateDTO model)
+        {
+            try
+            {
+                bool isEmailAlreadyUsed = await IsEmailAlreadyUsedAsync(model.Email);
+
+                // Vérifier si l'adresse e-mail est déjà utilisée
+                if (isEmailAlreadyUsed)
+                {
+                    throw new Exception("Email already in use");
+                }
+
+                // Créer un nouvel utilisateur en utilisant les données du modèle et la base de données contextuelle
+                UserApp newUser = model.ToUserApp();
+
+                // Tenter de créer un nouvel utilisateur avec le gestionnaire d'utilisateurs
+                IdentityResult result = await userManager.CreateAsync(newUser, model.Password);
+
+                // Tenter d'ajouter l'utilisateur aux rôles spécifiés dans le modèle
+                IdentityResult roleResult = await userManager.AddToRolesAsync(
+                    user: newUser,
+                    roles: ["Client"]
+                );
+
+                // Vérifier si la création de l'utilisateur a échoué
+                if (!result.Succeeded)
+                {
+                    // Si la création a échoué, ajouter les erreurs au modèle d'état et renvoyer une exception
+                    var errors = Enumerable.Empty<string>();
+                    foreach (var error in result.Errors)
+                    {
+                        errors.Append(error.Description);
+                        throw new Exception(error.Description);
+                    }
+                }
+
+                return newUser.ToUserResponseDTO();
+            } catch
+            {
+                throw;
+            }
+        }
+
+        public async Task<UserResponseDTO> Update(UserCreateDTO model, ClaimsPrincipal UserPrincipal)
+        {
+            try
+            {
+                var user = UserService.GetUserFromClaim(UserPrincipal, context);
+                if (user is null)
+                {
+                    throw new Exception("Account not found");
+                }
+
+                user = model.ToSimpleUser(user);
+
+                await context.SaveChangesAsync();
+
+                return user.ToUserResponseDTO();
+            } catch
+            {
+                throw;
+            }
+        }
+
+        public async Task<object> Login(UserLoginDTO model, HttpResponse response)
+        {
+            try
+            {
+                var user = await userManager.FindByEmailAsync(model.Email);
+
+                if (user == null)
+                {
+                    throw new Exception("User not found");
+                }
+
+                var result = await userManager.CheckPasswordAsync(user: user, password: model.Password);
+                if (!userManager.CheckPasswordAsync(user: user, password: model.Password).Result)
+                {
+                    throw new Exception("Login failed");
+                }
+
+                var userRoles = await userManager.GetRolesAsync(user);
+
+                return new{
+                        Token = await GenerateAccessTokenAsync(user),
+                        User = user.ToUserResponseDTO(userRoles.ToList()),
+                };
+            } catch
+            {
+                throw;
+            }
+        }
+
+        public async Task<string> GenerateAccessTokenAsync(UserApp user)
+        {
+            try
+            {
+                var securityKey = new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(Env.JWT_KEY)
+                );
+                var credentials = new SigningCredentials(
+                    key: securityKey,
+                    algorithm: SecurityAlgorithms.HmacSha256
+                );
+
+                var userRoles = await userManager.GetRolesAsync(user);
+
+                var authClaims = new List<Claim>
+            {
+                new Claim(type: ClaimTypes.Email, value: user.Email),
+            };
+
+                foreach (var userRole in userRoles)
+                {
+                    authClaims.Add(new Claim(type: ClaimTypes.Role, value: userRole));
+                }
+
+                var token = new JwtSecurityToken(
+                    issuer: Env.API_BACK_URL,
+                    audience: Env.API_BACK_URL,
+                    claims: authClaims,
+                    expires: DateTime.Now.AddDays(Env.TOKEN_VALIDITY_DAYS),
+                    signingCredentials: credentials
+                );
+
+                context.Entry(user).State = EntityState.Modified;
+
+                return new JwtSecurityTokenHandler().WriteToken(token);
+            } catch
+            {
+                throw;
+            }
+        }
+
+        private async Task<bool> IsEmailAlreadyUsedAsync(string email)
+        {
+            var existingUser = await userManager.FindByEmailAsync(email);
+            return existingUser != null;
+        }
+    }
+}
