@@ -17,6 +17,21 @@ namespace Procrastinator.Services
             return quests.Select(QuestDTO.ToQuestDTO).ToList();
         }
 
+        public async Task<List<QuestDTO>> GetAllPendingQuestsAsync()
+        {
+            var pending_quests = await context.Quests
+                .Where(q => q.IsDone == false)
+                .ToListAsync();
+            return pending_quests.Select(QuestDTO.ToQuestDTO).ToList();
+        }
+        public async Task<List<QuestDTO>> GetAllCompletedQuestsAsync()
+        {
+            var completed_quests = await context.Quests
+                .Where(q => q.IsDone == true)
+                .ToListAsync();
+            return completed_quests.Select(QuestDTO.ToQuestDTO).ToList();
+        }
+
         public async Task<QuestDTO?> GetQuestByIdAsync(Guid id)
         {
             var quest = await context.Quests.FindAsync(id);

@@ -24,6 +24,20 @@ namespace Procrastinator.Controllers
             return Ok(quests);
         }
 
+        [HttpGet("pending")]
+        public async Task<IActionResult> GetAllPendingQuests()
+        {
+            var pending_quests = await questService.GetAllPendingQuestsAsync();
+            return Ok(pending_quests);
+        }
+
+        [HttpGet("completed")]
+        public async Task<IActionResult> GetAllCompletedQuests()
+        {
+            var completed_quests = await questService.GetAllCompletedQuestsAsync();
+            return Ok(completed_quests);
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetQuestById(Guid id)
         {
