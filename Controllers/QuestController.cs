@@ -37,6 +37,11 @@ namespace Procrastinator.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateQuest([FromBody] QuestDTO questDto)
         {
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+            questDto.UserId = userId;
+
             var createdQuest = await questService.CreateQuestAsync(questDto);
             return CreatedAtAction(nameof(GetQuestById), new { id = createdQuest.Id }, createdQuest);
         }
