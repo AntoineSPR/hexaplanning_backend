@@ -32,6 +32,11 @@ namespace Procrastinator.Models
 
         public bool IsRepeatable { get; set; }
 
+        public DateTime? StartDate { get; set; }
+
+        public DateTime? EndDate { get; set; }
+
+
         public Quest ToQuest()
         {
             return new Quest
@@ -45,7 +50,9 @@ namespace Procrastinator.Models
                 Difficulty = Difficulty,
                 Priority = Priority,
                 IsDone = IsDone,
-                IsRepeatable = IsRepeatable
+                IsRepeatable = IsRepeatable,
+                StartDate = StartDate,
+                EndDate = EndDate
             };
         }
 
@@ -63,7 +70,9 @@ namespace Procrastinator.Models
                 Difficulty = quest.Difficulty,
                 Priority = quest.Priority,
                 IsDone = quest.IsDone,
-                IsRepeatable = quest.IsRepeatable
+                IsRepeatable = quest.IsRepeatable,
+                StartDate = quest.StartDate,
+                EndDate = quest.EndDate
             };
 
         }

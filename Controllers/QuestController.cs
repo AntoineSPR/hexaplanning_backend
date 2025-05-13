@@ -6,7 +6,7 @@ using Procrastinator.Services;
 namespace Procrastinator.Controllers
 {
     [Route("[controller]")]
-    [Authorize]
+    //[Authorize]
     [ApiController]
     public class QuestController: ControllerBase
     {

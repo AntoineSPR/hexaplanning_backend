@@ -88,7 +88,11 @@ bool IsOriginAllowed(string origin)
 #endregion
 void ConfigureControllers(IServiceCollection services)
 {
-    services.AddControllers();
+    services.AddControllers()
+         .AddJsonOptions(options =>
+         {
+             options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+         }); 
 }
 
 void ConfigureIdentity(IServiceCollection services)
