@@ -6,6 +6,7 @@ using Procrastinator.Services;
 namespace Procrastinator.Controllers
 {
     [Route("[controller]")]
+    //TODO : Change
     //[Authorize]
     [ApiController]
     public class QuestController: ControllerBase
@@ -38,8 +39,12 @@ namespace Procrastinator.Controllers
         public async Task<IActionResult> CreateQuest([FromBody] QuestDTO questDto)
         {
             var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId)) return Unauthorized();
-
+            if (string.IsNullOrEmpty(userId))
+            {
+                //TODO : Change
+                //return Unauthorized();
+                userId = "d66a44af-736a-4788-8ba2-9c6aa7c29e2e";
+            }
             questDto.UserId = userId;
 
             var createdQuest = await questService.CreateQuestAsync(questDto);
