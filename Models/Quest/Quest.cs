@@ -3,6 +3,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Procrastinator.Models
 {
+    public enum QuestPriority
+    {
+        PRIMARY,
+        SECONDARY,
+        TERTIARY
+    }
     public class Quest
     {
         [Key]
@@ -28,6 +34,12 @@ namespace Procrastinator.Models
         public int EstimatedTime { get; set; }
 
         public int Difficulty { get; set; }
+
+        public QuestPriority Priority { get; set; }
+
+        public bool IsDone { get; set; }
+
+        public bool IsRepeatable { get; set; }
 
     }
 }

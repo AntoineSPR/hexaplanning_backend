@@ -42,11 +42,6 @@ namespace Procrastinator.Services
                 // Tenter de créer un nouvel utilisateur avec le gestionnaire d'utilisateurs
                 IdentityResult result = await userManager.CreateAsync(newUser, model.Password);
 
-                // Tenter d'ajouter l'utilisateur aux rôles spécifiés dans le modèle
-                IdentityResult roleResult = await userManager.AddToRolesAsync(
-                    user: newUser,
-                    roles: ["Client"]
-                );
 
                 // Vérifier si la création de l'utilisateur a échoué
                 if (!result.Succeeded)
@@ -59,6 +54,12 @@ namespace Procrastinator.Services
                         throw new Exception(error.Description);
                     }
                 }
+
+                // Tenter d'ajouter l'utilisateur aux rôles spécifiés dans le modèle
+                IdentityResult roleResult = await userManager.AddToRolesAsync(
+                    user: newUser,
+                    roles: ["Client"]
+                );
 
                 return newUser.ToUserResponseDTO();
             } catch
