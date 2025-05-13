@@ -35,6 +35,7 @@ namespace Procrastinator.Models
 
         public int Difficulty { get; set; }
 
+        [EnumDataType(typeof(QuestPriority))]
         public QuestPriority Priority { get; set; }
 
         public bool IsDone { get; set; }

@@ -23,6 +23,7 @@ void ConfigureServices(IServiceCollection services)
     // Custom Services
     services.AddScoped<AuthService>();
     services.AddScoped<UserService>();
+    services.AddScoped<QuestService>();
 
     // Logger
     services.AddLogging(loggingBuilder =>
