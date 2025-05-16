@@ -5,20 +5,11 @@ using System.Security.Claims;
 
 namespace Procrastinator.Services
 {
-    public class UserService
-    {
-        private readonly DataContext context;
-        private readonly UserManager<UserApp> userManager;
-
-        public UserService(
-                DataContext context,
-                UserManager<UserApp> userManager
+    public class UserService(
+            DataContext context,
+            UserManager<UserApp> userManager
                 )
-        {
-            this.context = context;
-            this.userManager = userManager;
-        }
-
+    {
         public async Task<UserResponseDTO?> GetUserByEmail(string email)
         {
             UserApp? user = context.Users.FirstOrDefault(x => x.Email == email);

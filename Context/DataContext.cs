@@ -49,5 +49,7 @@ namespace Procrastinator.Context
         public DbSet<Role> Roles { get; set; }
 
         public DbSet<Quest> Quests { get; set; }
+
+        public DbSet<HexAssignment> HexAssignments { get; set; }
     }
 }

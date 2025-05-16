@@ -4,13 +4,10 @@ using Procrastinator.Models;
 
 namespace Procrastinator.Services
 {
-    public class QuestService
+    public class QuestService(DataContext context)
     {
-        private readonly DataContext context;
-        public QuestService(DataContext context)
-        {
-            this.context = context;
-        }
+        private readonly DataContext context = context;
+
         public async Task<List<QuestDTO>> GetAllQuestsAsync()
         {
             var quests = await context.Quests.ToListAsync();
