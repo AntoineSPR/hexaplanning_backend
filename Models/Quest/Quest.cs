@@ -44,6 +44,7 @@ namespace Procrastinator.Models
         public DateTime? StartDate { get; set; }
 
         public DateTime? EndDate { get; set; }
+        public HexAssignment? HexAssignment { get; set; }
 
     }
 }

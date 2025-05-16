@@ -3,7 +3,7 @@
     public class HexAssignmentDTO
     {
         public int Id { get; set; }
-        public string? QuestId { get; set; }
+        public Guid QuestId { get; set; }
         public int Q { get; set; }
         public int R { get; set; }
         public int S { get; set; }
