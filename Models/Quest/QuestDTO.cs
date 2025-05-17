@@ -29,12 +29,16 @@ namespace Procrastinator.Models
 
         public bool IsDone { get; set; }
 
+        public bool IsAssigned { get; set; }
+
         public bool IsRepeatable { get; set; }
 
         public DateTime? StartDate { get; set; }
 
         public DateTime? EndDate { get; set; }
 
+        [ForeignKey("HexAssignment")]
+        public int? HexAssignmentId { get; set; }
 
         public Quest ToQuest()
         {
@@ -49,9 +53,11 @@ namespace Procrastinator.Models
                 Difficulty = Difficulty,
                 Priority = Priority,
                 IsDone = IsDone,
+                IsAssigned = IsAssigned,
                 IsRepeatable = IsRepeatable,
                 StartDate = StartDate,
-                EndDate = EndDate
+                EndDate = EndDate,
+                HexAssignmentId = HexAssignmentId
             };
         }
 
@@ -69,9 +75,11 @@ namespace Procrastinator.Models
                 Difficulty = quest.Difficulty,
                 Priority = quest.Priority,
                 IsDone = quest.IsDone,
+                IsAssigned = quest.IsAssigned,
                 IsRepeatable = quest.IsRepeatable,
                 StartDate = quest.StartDate,
-                EndDate = quest.EndDate
+                EndDate = quest.EndDate,
+                HexAssignmentId = quest.HexAssignmentId
             };
 
         }

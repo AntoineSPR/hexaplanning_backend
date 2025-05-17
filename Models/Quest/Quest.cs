@@ -39,12 +39,18 @@ namespace Procrastinator.Models
 
         public bool IsDone { get; set; }
 
+        public bool IsAssigned { get; set; }
+
         public bool IsRepeatable { get; set; }
 
         public DateTime? StartDate { get; set; }
 
         public DateTime? EndDate { get; set; }
+
         public HexAssignment? HexAssignment { get; set; }
+
+        [ForeignKey(nameof(HexAssignment))]
+        public int? HexAssignmentId { get; set; }
 
     }
 }
