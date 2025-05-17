@@ -29,6 +29,15 @@ namespace Procrastinator.Services
             return completed_quests.Select(QuestDTO.ToQuestDTO).ToList();
         }
 
+        public async Task<List<QuestDTO>> GetAllUnassignedPendingQuestsAsync()
+        {
+            var unassigned_pending_quests = await context.Quests
+                .Where(q => q.IsAssigned == false && q.IsDone == false)
+                .ToListAsync();
+            return unassigned_pending_quests.Select(QuestDTO.ToQuestDTO).ToList();
+
+        }
+
         public async Task<QuestDTO?> GetQuestByIdAsync(Guid id)
         {
             var quest = await context.Quests.FindAsync(id);
