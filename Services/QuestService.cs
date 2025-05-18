@@ -68,6 +68,7 @@ namespace Procrastinator.Services
             quest.Priority = updatedQuest.Priority;
             quest.IsDone = updatedQuest.IsDone;
             quest.IsRepeatable = updatedQuest.IsRepeatable;
+            quest.IsAssigned = updatedQuest.IsAssigned;
             await context.SaveChangesAsync();
             return QuestDTO.ToQuestDTO(quest);
         }
