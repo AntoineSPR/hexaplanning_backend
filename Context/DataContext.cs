@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using System.Reflection.Emit;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Procrastinator.Models;
 
@@ -22,6 +23,11 @@ namespace Procrastinator.Context
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.Entity<HexAssignment>()
+                .HasIndex(h => new { h.Q, h.R, h.S })
+                .IsUnique();
+
             var roles = new List<Role>()
             {
                 new Role()

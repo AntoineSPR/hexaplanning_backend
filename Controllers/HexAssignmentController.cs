@@ -31,6 +31,17 @@ namespace Procrastinator.Controllers
             }
             return Ok(hexAssignment);
         }
+        [HttpGet("coordinates/{q}/{r}/{s}")]
+        public async Task<IActionResult> GetHexAssignmentByCoordinates(int q, int r, int s)
+        {
+            var hexAssignment = await hexAssignmentService.GetHexAssignmentByCoordinatesAsync(q, r, s);
+            if (hexAssignment == null)
+            {
+                return NotFound();
+            }
+            return Ok(hexAssignment);
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateHexAssignment([FromBody] HexAssignmentDTO hexAssignmentDto)
         {

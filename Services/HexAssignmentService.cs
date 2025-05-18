@@ -20,6 +20,12 @@ namespace Procrastinator.Services
             return hexAssignment == null ? null : HexAssignmentDTO.ToHexAssignmentDTO(hexAssignment);
         }
 
+        public async Task<HexAssignmentDTO?> GetHexAssignmentByCoordinatesAsync(int q, int r, int s)
+        {
+            var hexAssignment = await context.HexAssignments.FirstOrDefaultAsync(h => h.Q == q && h.R == r && h.S == s);
+            return hexAssignment == null ? null : HexAssignmentDTO.ToHexAssignmentDTO(hexAssignment);
+        }
+
         public async Task<HexAssignmentDTO> CreateHexAssignmentAsync(HexAssignmentDTO hexAssignmentDto)
         {
             var hexAssignment = hexAssignmentDto.ToHexAssignment();
