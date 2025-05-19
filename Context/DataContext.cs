@@ -24,6 +24,11 @@ namespace Procrastinator.Context
         {
             base.OnModelCreating(builder);
 
+            builder.Entity<Quest>()
+                .HasOne(q => q.HexAssignment)
+                .WithOne(h => h.Quest)
+                .HasForeignKey<HexAssignment>(h => h.QuestId);
+
             builder.Entity<HexAssignment>()
                 .HasIndex(h => new { h.Q, h.R, h.S })
                 .IsUnique();

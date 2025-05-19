@@ -13,6 +13,7 @@ namespace Procrastinator.Models
 
         public string Description { get; set; }
 
+        [Required]
         [ForeignKey("User")]
         public string? UserId { get; set; }
 
@@ -37,8 +38,8 @@ namespace Procrastinator.Models
 
         public DateTime? EndDate { get; set; }
 
-        [ForeignKey("HexAssignment")]
-        public int? HexAssignmentId { get; set; }
+        public int? HexAssignmentId => HexAssignment?.Id;
+        public HexAssignmentDTO? HexAssignment { get; set; }
 
         public Quest ToQuest()
         {
@@ -57,7 +58,7 @@ namespace Procrastinator.Models
                 IsRepeatable = IsRepeatable,
                 StartDate = StartDate,
                 EndDate = EndDate,
-                HexAssignmentId = HexAssignmentId
+                HexAssignment = HexAssignment != null ? HexAssignment.ToHexAssignment() : null
             };
         }
 
@@ -79,7 +80,7 @@ namespace Procrastinator.Models
                 IsRepeatable = quest.IsRepeatable,
                 StartDate = quest.StartDate,
                 EndDate = quest.EndDate,
-                HexAssignmentId = quest.HexAssignmentId
+                HexAssignment = quest.HexAssignment != null ? HexAssignmentDTO.ToHexAssignmentDTO(quest.HexAssignment) : null
             };
 
         }

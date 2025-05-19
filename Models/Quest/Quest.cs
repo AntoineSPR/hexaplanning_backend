@@ -48,9 +48,5 @@ namespace Procrastinator.Models
         public DateTime? EndDate { get; set; }
 
         public HexAssignment? HexAssignment { get; set; }
-
-        [ForeignKey(nameof(HexAssignment))]
-        public int? HexAssignmentId { get; set; }
-
     }
 }

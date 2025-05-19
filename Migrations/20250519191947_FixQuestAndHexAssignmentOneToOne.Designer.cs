@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Procrastinator.Context;
@@ -11,9 +12,11 @@ using Procrastinator.Context;
 namespace Procrastinator.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250519191947_FixQuestAndHexAssignmentOneToOne")]
+    partial class FixQuestAndHexAssignmentOneToOne
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -185,8 +188,7 @@ namespace Procrastinator.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("QuestId")
-                        .IsUnique();
+                    b.HasIndex("QuestId");
 
                     b.HasIndex("Q", "R", "S")
                         .IsUnique();
@@ -219,6 +221,9 @@ namespace Procrastinator.Migrations
                     b.Property<int>("ExperienceGain")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("HexAssignmentId")
+                        .HasColumnType("integer");
+
                     b.Property<bool>("IsAssigned")
                         .HasColumnType("boolean");
 
@@ -244,6 +249,8 @@ namespace Procrastinator.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("HexAssignmentId");
 
                     b.HasIndex("UserId");
 
@@ -399,8 +406,8 @@ namespace Procrastinator.Migrations
             modelBuilder.Entity("Procrastinator.Models.HexAssignment", b =>
                 {
                     b.HasOne("Procrastinator.Models.Quest", "Quest")
-                        .WithOne("HexAssignment")
-                        .HasForeignKey("Procrastinator.Models.HexAssignment", "QuestId")
+                        .WithMany()
+                        .HasForeignKey("QuestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -409,18 +416,19 @@ namespace Procrastinator.Migrations
 
             modelBuilder.Entity("Procrastinator.Models.Quest", b =>
                 {
+                    b.HasOne("Procrastinator.Models.HexAssignment", "HexAssignment")
+                        .WithMany()
+                        .HasForeignKey("HexAssignmentId");
+
                     b.HasOne("Procrastinator.Models.UserApp", "User")
                         .WithMany("QuestList")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Procrastinator.Models.Quest", b =>
-                {
                     b.Navigation("HexAssignment");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Procrastinator.Models.UserApp", b =>
