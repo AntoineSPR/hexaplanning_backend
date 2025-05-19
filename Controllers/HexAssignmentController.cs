@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using Procrastinator.Models;
 using Procrastinator.Services;
 
@@ -21,6 +23,7 @@ namespace Procrastinator.Controllers
             var hexAssignments = await hexAssignmentService.GetAllHexAssignmentsAsync();
             return Ok(hexAssignments);
         }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetHexAssignmentById(int id)
         {
@@ -31,6 +34,7 @@ namespace Procrastinator.Controllers
             }
             return Ok(hexAssignment);
         }
+
         [HttpGet("coordinates/{q}/{r}/{s}")]
         public async Task<IActionResult> GetHexAssignmentByCoordinates(int q, int r, int s)
         {
@@ -45,19 +49,32 @@ namespace Procrastinator.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateHexAssignment([FromBody] HexAssignmentDTO hexAssignmentDto)
         {
+            try { 
             var createdHexAssignment = await hexAssignmentService.CreateHexAssignmentAsync(hexAssignmentDto);
             return CreatedAtAction(nameof(GetHexAssignmentById), new { id = createdHexAssignment.Id }, createdHexAssignment);
+            } catch (DbUpdateException ex) when(ex.InnerException is PostgresException pgEx && pgEx.SqlState == "23505")
+            {
+                return Conflict(new { message = "Une quête est déjà associée à cet hexagone" });
+            }
         }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateHexAssignment(int id, [FromBody] HexAssignmentDTO updatedHexAssignment)
         {
-            var result = await hexAssignmentService.UpdateHexAssignmentAsync(id, updatedHexAssignment);
-            if (result == null)
+            try
             {
-                return NotFound();
+                var result = await hexAssignmentService.UpdateHexAssignmentAsync(id, updatedHexAssignment);
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                return Ok(result);
+            } catch (DbUpdateException ex) when (ex.InnerException is PostgresException pgEx && pgEx.SqlState == "23505")
+            {
+                return Conflict(new { message = "Une quête est déjà associée à cet hexagone" });
             }
-            return Ok(result);
         }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteHexAssignment(int id)
         {
