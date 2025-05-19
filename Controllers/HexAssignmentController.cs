@@ -75,10 +75,10 @@ namespace Procrastinator.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteHexAssignment(int id)
+        [HttpDelete("coordinates/{q}/{r}/{s}")]
+        public async Task<IActionResult> DeleteHexAssignment(int q, int r, int s)
         {
-            var result = await hexAssignmentService.DeleteHexAssignmentAsync(id);
+            var result = await hexAssignmentService.DeleteHexAssignmentAsync(q, r, s);
             if (!result)
             {
                 return NotFound();

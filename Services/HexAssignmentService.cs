@@ -49,9 +49,9 @@ namespace Procrastinator.Services
             return HexAssignmentDTO.ToHexAssignmentDTO(hexAssignment);
         }
 
-        public async Task<bool> DeleteHexAssignmentAsync(int id)
+        public async Task<bool> DeleteHexAssignmentAsync(int q, int r, int s)
         {
-            var hexAssignment = await context.HexAssignments.FindAsync(id);
+            var hexAssignment = await context.HexAssignments.FirstOrDefaultAsync(h => h.Q == q && h.R == r && h.S == s);
             if (hexAssignment == null)
             {
                 return false;
