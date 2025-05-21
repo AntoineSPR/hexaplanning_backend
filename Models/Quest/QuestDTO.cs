@@ -13,7 +13,8 @@ namespace Procrastinator.Models
 
         public string Description { get; set; }
 
-        [Required]
+        // TODO : Change
+        //[Required]
         [ForeignKey("User")]
         public string? UserId { get; set; }
 

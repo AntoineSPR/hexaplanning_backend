@@ -20,6 +20,13 @@ namespace Procrastinator.Services
             return hexAssignment == null ? null : HexAssignmentDTO.ToHexAssignmentDTO(hexAssignment);
         }
 
+        public async Task<HexAssignmentDTO?> GetHexAssignmentByQuestIdAsync(Guid questId)
+        {
+            var hexAssignement = await context.HexAssignments.FirstOrDefaultAsync(h => h.QuestId == questId);
+            return hexAssignement == null ? null : HexAssignmentDTO.ToHexAssignmentDTO(hexAssignement);
+
+        }
+
         public async Task<HexAssignmentDTO?> GetHexAssignmentByCoordinatesAsync(int q, int r, int s)
         {
             var hexAssignment = await context.HexAssignments.FirstOrDefaultAsync(h => h.Q == q && h.R == r && h.S == s);
