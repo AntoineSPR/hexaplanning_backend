@@ -18,13 +18,7 @@ namespace Procrastinator.Models
         [ForeignKey("User")]
         public string? UserId { get; set; }
 
-        public int ExperienceGain { get; set; }
-
-        public int Apprehension { get; set; }
-
         public int EstimatedTime { get; set; }
-
-        public int Difficulty { get; set; }
 
         [EnumDataType(typeof(QuestPriority))]
         public QuestPriority Priority { get; set; }
@@ -32,12 +26,6 @@ namespace Procrastinator.Models
         public bool IsDone { get; set; }
 
         public bool IsAssigned { get; set; }
-
-        public bool IsRepeatable { get; set; }
-
-        public DateTime? StartDate { get; set; }
-
-        public DateTime? EndDate { get; set; }
 
         public int? HexAssignmentId => HexAssignment?.Id;
         public HexAssignmentDTO? HexAssignment { get; set; }
@@ -49,16 +37,10 @@ namespace Procrastinator.Models
                 Title = Title,
                 Description = Description,
                 UserId = UserId,
-                ExperienceGain = ExperienceGain,
-                Apprehension = Apprehension,
                 EstimatedTime = EstimatedTime,
-                Difficulty = Difficulty,
                 Priority = Priority,
                 IsDone = IsDone,
                 IsAssigned = IsAssigned,
-                IsRepeatable = IsRepeatable,
-                StartDate = StartDate,
-                EndDate = EndDate,
                 HexAssignment = HexAssignment != null ? HexAssignment.ToHexAssignment() : null
             };
         }
@@ -71,16 +53,10 @@ namespace Procrastinator.Models
                 Title = quest.Title,
                 Description = quest.Description,
                 UserId = quest.UserId,
-                ExperienceGain = quest.ExperienceGain,
-                Apprehension = quest.Apprehension,
                 EstimatedTime = quest.EstimatedTime,
-                Difficulty = quest.Difficulty,
                 Priority = quest.Priority,
                 IsDone = quest.IsDone,
                 IsAssigned = quest.IsAssigned,
-                IsRepeatable = quest.IsRepeatable,
-                StartDate = quest.StartDate,
-                EndDate = quest.EndDate,
                 HexAssignment = quest.HexAssignment != null ? HexAssignmentDTO.ToHexAssignmentDTO(quest.HexAssignment) : null
             };
 

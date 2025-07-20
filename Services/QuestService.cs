@@ -61,13 +61,9 @@ namespace Procrastinator.Services
             }
             quest.Title = updatedQuest.Title;
             quest.Description = updatedQuest.Description;
-            quest.ExperienceGain = updatedQuest.ExperienceGain;
-            quest.Apprehension = updatedQuest.Apprehension;
             quest.EstimatedTime = updatedQuest.EstimatedTime;
-            quest.Difficulty = updatedQuest.Difficulty;
             quest.Priority = updatedQuest.Priority;
             quest.IsDone = updatedQuest.IsDone;
-            quest.IsRepeatable = updatedQuest.IsRepeatable;
             quest.IsAssigned = updatedQuest.IsAssigned;
             await context.SaveChangesAsync();
             return QuestDTO.ToQuestDTO(quest);
