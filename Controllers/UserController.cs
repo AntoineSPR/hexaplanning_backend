@@ -40,9 +40,9 @@ namespace Procrastinator.Controllers
                     var result = await authService.Register(model);
 
                     return Ok(result);
-                } catch
+                } catch(Exception e)
                 {
-                    throw;
+                return BadRequest(e.Message);
                 }
             }
 

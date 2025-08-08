@@ -26,16 +26,15 @@ namespace Procrastinator.Services
 
         public async Task<UserResponseDTO?> Register(UserCreateDTO model)
         {
+            // Vérifier si l'adresse e-mail est déjà utilisée
+            bool isEmailAlreadyUsed = await IsEmailAlreadyUsedAsync(model.Email);
+            if (isEmailAlreadyUsed)
+            {
+                throw new Exception("Email déjà utilisé");
+            }
+
             try
             {
-                bool isEmailAlreadyUsed = await IsEmailAlreadyUsedAsync(model.Email);
-
-                // Vérifier si l'adresse e-mail est déjà utilisée
-                if (isEmailAlreadyUsed)
-                {
-                    throw new Exception("Email already in use");
-                }
-
                 // Créer un nouvel utilisateur en utilisant les données du modèle et la base de données contextuelle
                 UserApp newUser = model.ToUserApp();
 
@@ -64,7 +63,7 @@ namespace Procrastinator.Services
                 return newUser.ToUserResponseDTO();
             } catch
             {
-                throw;
+                throw new Exception("Une erreur s'est produite");
             }
         }
 
