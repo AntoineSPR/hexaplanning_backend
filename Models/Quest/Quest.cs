@@ -26,24 +26,15 @@ namespace Procrastinator.Models
         [ForeignKey(nameof(User))]
         public string UserId { get; set; }
 
-        public int ExperienceGain { get; set; }
-
-        public int Apprehension { get; set; }
-
         public int EstimatedTime { get; set; }
-
-        public int Difficulty { get; set; }
 
         [EnumDataType(typeof(QuestPriority))]
         public QuestPriority Priority { get; set; }
 
         public bool IsDone { get; set; }
 
-        public bool IsRepeatable { get; set; }
+        public bool IsAssigned { get; set; }
 
-        public DateTime? StartDate { get; set; }
-
-        public DateTime? EndDate { get; set; }
-
+        public HexAssignment? HexAssignment { get; set; }
     }
 }

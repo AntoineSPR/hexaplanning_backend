@@ -24,6 +24,7 @@ void ConfigureServices(IServiceCollection services)
     services.AddScoped<AuthService>();
     services.AddScoped<UserService>();
     services.AddScoped<QuestService>();
+    services.AddScoped<HexAssignmentService>();
 
     // Logger
     services.AddLogging(loggingBuilder =>

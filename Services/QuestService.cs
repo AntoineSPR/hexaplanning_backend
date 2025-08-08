@@ -4,13 +4,10 @@ using Procrastinator.Models;
 
 namespace Procrastinator.Services
 {
-    public class QuestService
+    public class QuestService(DataContext context)
     {
-        private readonly DataContext context;
-        public QuestService(DataContext context)
-        {
-            this.context = context;
-        }
+        private readonly DataContext context = context;
+
         public async Task<List<QuestDTO>> GetAllQuestsAsync()
         {
             var quests = await context.Quests.ToListAsync();
@@ -30,6 +27,15 @@ namespace Procrastinator.Services
                 .Where(q => q.IsDone == true)
                 .ToListAsync();
             return completed_quests.Select(QuestDTO.ToQuestDTO).ToList();
+        }
+
+        public async Task<List<QuestDTO>> GetAllUnassignedPendingQuestsAsync()
+        {
+            var unassigned_pending_quests = await context.Quests
+                .Where(q => q.IsAssigned == false && q.IsDone == false)
+                .ToListAsync();
+            return unassigned_pending_quests.Select(QuestDTO.ToQuestDTO).ToList();
+
         }
 
         public async Task<QuestDTO?> GetQuestByIdAsync(Guid id)
@@ -55,13 +61,10 @@ namespace Procrastinator.Services
             }
             quest.Title = updatedQuest.Title;
             quest.Description = updatedQuest.Description;
-            quest.ExperienceGain = updatedQuest.ExperienceGain;
-            quest.Apprehension = updatedQuest.Apprehension;
             quest.EstimatedTime = updatedQuest.EstimatedTime;
-            quest.Difficulty = updatedQuest.Difficulty;
             quest.Priority = updatedQuest.Priority;
             quest.IsDone = updatedQuest.IsDone;
-            quest.IsRepeatable = updatedQuest.IsRepeatable;
+            quest.IsAssigned = updatedQuest.IsAssigned;
             await context.SaveChangesAsync();
             return QuestDTO.ToQuestDTO(quest);
         }

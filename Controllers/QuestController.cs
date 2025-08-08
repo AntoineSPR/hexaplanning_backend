@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using Procrastinator.Models;
 using Procrastinator.Services;
 
@@ -38,6 +40,13 @@ namespace Procrastinator.Controllers
             return Ok(completed_quests);
         }
 
+        [HttpGet("unassigned_pending")]
+        public async Task<IActionResult> GetAllUnassignedPendingQuests()
+        {
+            var unassigned_pending_quests = await questService.GetAllUnassignedPendingQuestsAsync();
+            return Ok(unassigned_pending_quests);
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetQuestById(Guid id)
         {
@@ -61,19 +70,31 @@ namespace Procrastinator.Controllers
             }
             questDto.UserId = userId;
 
-            var createdQuest = await questService.CreateQuestAsync(questDto);
-            return CreatedAtAction(nameof(GetQuestById), new { id = createdQuest.Id }, createdQuest);
+            try
+            {
+                var createdQuest = await questService.CreateQuestAsync(questDto);
+                return CreatedAtAction(nameof(GetQuestById), new { id = createdQuest.Id }, createdQuest);
+            } catch (DbUpdateException ex) when (ex.InnerException is PostgresException pgEx && pgEx.SqlState == "23505")
+            {
+                return Conflict(new { message = "Une quête est déjà associée à cet hexagone" });
+            }
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateQuest(Guid id, [FromBody] QuestDTO updatedQuest)
         {
-            var quest = await questService.UpdateQuestAsync(id, updatedQuest);
-            if (quest == null)
+            try
             {
-                return NotFound();
+                var quest = await questService.UpdateQuestAsync(id, updatedQuest);
+                if (quest == null)
+                {
+                    return NotFound();
+                }
+                return Ok(quest);
+            } catch (DbUpdateException ex) when (ex.InnerException is PostgresException pgEx && pgEx.SqlState == "23505")
+            {
+                return Conflict(new { message = "Une quête est déjà associée à cet hexagone" });
             }
-            return Ok(quest);
         }
 
         [HttpDelete("{id}")]
