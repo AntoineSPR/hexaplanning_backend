@@ -75,7 +75,7 @@ namespace Procrastinator.Controllers
             [AllowAnonymous]
             [Route("login")]
             [HttpPost]
-            public async Task<IActionResult> Login([FromBody] UserLoginDTO model)
+            public async Task<ActionResult<LoginResponseDTO>> Login([FromBody] UserLoginDTO model)
             {
                 try
                 {

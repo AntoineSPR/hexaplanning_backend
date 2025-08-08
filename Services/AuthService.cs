@@ -107,7 +107,7 @@ namespace Procrastinator.Services
 
                 var userRoles = await userManager.GetRolesAsync(user);
 
-                return new{
+                return new LoginResponseDTO {
                         Token = await GenerateAccessTokenAsync(user),
                         User = user.ToUserResponseDTO(userRoles.ToList()),
                 };
