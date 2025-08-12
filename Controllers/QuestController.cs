@@ -4,13 +4,14 @@ using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using Procrastinator.Models;
 using Procrastinator.Services;
+using Procrastinator.Utilities;
 
 namespace Procrastinator.Controllers
 {
     [Route("[controller]")]
-    //TODO : Change
-    //[Authorize]
+    [Authorize]
     [ApiController]
+    [CheckUser]
     public class QuestController: ControllerBase
     {
         private readonly QuestService questService;
@@ -22,35 +23,35 @@ namespace Procrastinator.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllQuests()
         {
-            var quests = await questService.GetAllQuestsAsync();
+            var quests = await questService.GetAllQuestsAsync(HttpContext.Items["UserId"] as string ?? "");
             return Ok(quests);
         }
 
         [HttpGet("pending")]
         public async Task<IActionResult> GetAllPendingQuests()
         {
-            var pending_quests = await questService.GetAllPendingQuestsAsync();
+            var pending_quests = await questService.GetAllPendingQuestsAsync(HttpContext.Items["UserId"] as string ?? "");
             return Ok(pending_quests);
         }
 
         [HttpGet("completed")]
         public async Task<IActionResult> GetAllCompletedQuests()
         {
-            var completed_quests = await questService.GetAllCompletedQuestsAsync();
+            var completed_quests = await questService.GetAllCompletedQuestsAsync(HttpContext.Items["UserId"] as string ?? "");
             return Ok(completed_quests);
         }
 
         [HttpGet("unassigned_pending")]
         public async Task<IActionResult> GetAllUnassignedPendingQuests()
         {
-            var unassigned_pending_quests = await questService.GetAllUnassignedPendingQuestsAsync();
+            var unassigned_pending_quests = await questService.GetAllUnassignedPendingQuestsAsync(HttpContext.Items["UserId"] as string ?? "");
             return Ok(unassigned_pending_quests);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetQuestById(Guid id)
         {
-            var quest = await questService.GetQuestByIdAsync(id);
+            var quest = await questService.GetQuestByIdAsync(id,HttpContext.Items["UserId"] as string ?? "");
             if (quest == null)
             {
                 return NotFound();
@@ -61,17 +62,10 @@ namespace Procrastinator.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateQuest([FromBody] QuestDTO questDto)
         {
-            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId))
-            {
-                //TODO : Change
-                //return Unauthorized();
-                userId = "d66a44af-736a-4788-8ba2-9c6aa7c29e2e";
-            }
-            questDto.UserId = userId;
-
+            var userId = HttpContext.Items["UserId"] as string;
             try
             {
+                questDto.UserId = userId;
                 var createdQuest = await questService.CreateQuestAsync(questDto);
                 return CreatedAtAction(nameof(GetQuestById), new { id = createdQuest.Id }, createdQuest);
             } catch (DbUpdateException ex) when (ex.InnerException is PostgresException pgEx && pgEx.SqlState == "23505")
@@ -83,9 +77,10 @@ namespace Procrastinator.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateQuest(Guid id, [FromBody] QuestDTO updatedQuest)
         {
+            var userId = HttpContext.Items["UserId"] as string;
             try
             {
-                var quest = await questService.UpdateQuestAsync(id, updatedQuest);
+                var quest = await questService.UpdateQuestAsync(id, updatedQuest, HttpContext.Items["UserId"] as string ?? "");
                 if (quest == null)
                 {
                     return NotFound();
@@ -100,7 +95,7 @@ namespace Procrastinator.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteQuest(Guid id)
         {
-            var result = await questService.DeleteQuestAsync(id);
+            var result = await questService.DeleteQuestAsync(id, HttpContext.Items["UserId"] as string ?? "");
             if (!result)
             {
                 return NotFound();

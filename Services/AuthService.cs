@@ -88,7 +88,7 @@ namespace Procrastinator.Services
             }
         }
 
-        public async Task<object> Login(UserLoginDTO model, HttpResponse response)
+        public async Task<object> Login(UserLoginDTO model)
         {
             try
             {
@@ -134,6 +134,7 @@ namespace Procrastinator.Services
                 var authClaims = new List<Claim>
             {
                 new Claim(type: ClaimTypes.Email, value: user.Email),
+                new Claim(type: ClaimTypes.NameIdentifier, value: user.Id)
             };
 
                 foreach (var userRole in userRoles)

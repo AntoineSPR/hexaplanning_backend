@@ -50,8 +50,6 @@ namespace Procrastinator.Controllers
             [EnableCors]
             [Route("update")]
             [HttpPatch]
-            [AllowAnonymous]
-
             public async Task<IActionResult> Update([FromBody] UserCreateDTO model)
             {
                 try
@@ -81,7 +79,7 @@ namespace Procrastinator.Controllers
                 {
                     if (!ModelState.IsValid) { throw new Exception("Login failed"); };
 
-                    var result = await authService.Login(model, HttpContext.Response);
+                    var result = await authService.Login(model);
     
                     return Ok(result);
                     

@@ -8,28 +8,28 @@ namespace Procrastinator.Services
     {
         private readonly DataContext context = context;
 
-        public async Task<List<HexAssignmentDTO>> GetAllHexAssignmentsAsync()
+        public async Task<List<HexAssignmentDTO>> GetAllHexAssignmentsAsync(string userId)
         {
-            var hexAssignments = await context.HexAssignments.ToListAsync();
+            var hexAssignments = await context.HexAssignments.Include(x => x.Quest).Where(x => x.Quest.UserId == userId).ToListAsync();
             return hexAssignments.Select(HexAssignmentDTO.ToHexAssignmentDTO).ToList();
         }
 
-        public async Task<HexAssignmentDTO?> GetHexAssignmentByIdAsync(int id)
+        public async Task<HexAssignmentDTO?> GetHexAssignmentByIdAsync(int id, string userId)
         {
-            var hexAssignment = await context.HexAssignments.FindAsync(id);
+            var hexAssignment = await context.HexAssignments.Include(x => x.Quest).FirstOrDefaultAsync(x => x.Quest.UserId == userId && x.Id == id);
             return hexAssignment == null ? null : HexAssignmentDTO.ToHexAssignmentDTO(hexAssignment);
         }
 
-        public async Task<HexAssignmentDTO?> GetHexAssignmentByQuestIdAsync(Guid questId)
+        public async Task<HexAssignmentDTO?> GetHexAssignmentByQuestIdAsync(Guid questId, string userId)
         {
-            var hexAssignement = await context.HexAssignments.FirstOrDefaultAsync(h => h.QuestId == questId);
+            var hexAssignement = await context.HexAssignments.Include(h => h.Quest).FirstOrDefaultAsync(h => h.QuestId == questId && h.Quest.UserId == userId);
             return hexAssignement == null ? null : HexAssignmentDTO.ToHexAssignmentDTO(hexAssignement);
 
         }
 
-        public async Task<HexAssignmentDTO?> GetHexAssignmentByCoordinatesAsync(int q, int r, int s)
+        public async Task<HexAssignmentDTO?> GetHexAssignmentByCoordinatesAsync(int q, int r, int s, string userId)
         {
-            var hexAssignment = await context.HexAssignments.FirstOrDefaultAsync(h => h.Q == q && h.R == r && h.S == s);
+            var hexAssignment = await context.HexAssignments.Include(x => x.Quest).Where(x => x.Quest.UserId == userId).FirstOrDefaultAsync(h => h.Q == q && h.R == r && h.S == s);
             return hexAssignment == null ? null : HexAssignmentDTO.ToHexAssignmentDTO(hexAssignment);
         }
 

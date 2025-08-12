@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using Procrastinator.Models;
@@ -7,9 +8,10 @@ using Procrastinator.Services;
 namespace Procrastinator.Controllers
 {
     [Route("[controller]")]
-    //TODO : Change
-    //[Authorize]
+
+    [Authorize]
     [ApiController]
+    [CheckUser]
     public class HexAssignmentController: ControllerBase
     {
         private readonly HexAssignmentService hexAssignmentService;
@@ -20,14 +22,14 @@ namespace Procrastinator.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllHexAssignments()
         {
-            var hexAssignments = await hexAssignmentService.GetAllHexAssignmentsAsync();
+            var hexAssignments = await hexAssignmentService.GetAllHexAssignmentsAsync(HttpContext.Items["UserId"] as string ?? "");
             return Ok(hexAssignments);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetHexAssignmentById(int id)
         {
-            var hexAssignment = await hexAssignmentService.GetHexAssignmentByIdAsync(id);
+            var hexAssignment = await hexAssignmentService.GetHexAssignmentByIdAsync(id, HttpContext.Items["UserId"] as string ?? "");
             if (hexAssignment == null)
             {
                 return NotFound();
@@ -38,7 +40,7 @@ namespace Procrastinator.Controllers
         [HttpGet("quest/{questId}")]
         public async Task<IActionResult> GetHexAssignmentByQuestId(Guid questId)
         {
-            var hexAssignment = await hexAssignmentService.GetHexAssignmentByQuestIdAsync(questId);
+            var hexAssignment = await hexAssignmentService.GetHexAssignmentByQuestIdAsync(questId, HttpContext.Items["UserId"] as string ?? "");
             if (hexAssignment == null)
             {
                 return NotFound();
@@ -49,7 +51,7 @@ namespace Procrastinator.Controllers
         [HttpGet("coordinates/{q}/{r}/{s}")]
         public async Task<IActionResult> GetHexAssignmentByCoordinates(int q, int r, int s)
         {
-            var hexAssignment = await hexAssignmentService.GetHexAssignmentByCoordinatesAsync(q, r, s);
+            var hexAssignment = await hexAssignmentService.GetHexAssignmentByCoordinatesAsync(q, r, s, HttpContext.Items["UserId"] as string ?? "");
             if (hexAssignment == null)
             {
                 return NotFound();
@@ -60,6 +62,7 @@ namespace Procrastinator.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateHexAssignment([FromBody] HexAssignmentDTO hexAssignmentDto)
         {
+            //TODO : ajouter userId
             try { 
             var createdHexAssignment = await hexAssignmentService.CreateHexAssignmentAsync(hexAssignmentDto);
             return CreatedAtAction(nameof(GetHexAssignmentById), new { id = createdHexAssignment.Id }, createdHexAssignment);
@@ -72,6 +75,8 @@ namespace Procrastinator.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateHexAssignment(int id, [FromBody] HexAssignmentDTO updatedHexAssignment)
         {
+            //TODO : ajouter userId
+
             try
             {
                 var result = await hexAssignmentService.UpdateHexAssignmentAsync(id, updatedHexAssignment);
@@ -89,6 +94,8 @@ namespace Procrastinator.Controllers
         [HttpDelete("coordinates/{q}/{r}/{s}")]
         public async Task<IActionResult> DeleteHexAssignment(int q, int r, int s)
         {
+            //TODO : ajouter userId
+
             var result = await hexAssignmentService.DeleteHexAssignmentAsync(q, r, s);
             if (!result)
             {
