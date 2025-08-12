@@ -87,7 +87,7 @@ namespace Procrastinator.Controllers
                     
                 } catch
                 {
-                    throw;
+                return new StatusCodeResult(StatusCodes.Status400BadRequest);
                 }
             }
 
