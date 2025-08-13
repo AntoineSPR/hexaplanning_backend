@@ -4,6 +4,7 @@
     {
         public int Id { get; set; }
         public Guid QuestId { get; set; }
+        public Guid UserId { get; set; }
         public int Q { get; set; }
         public int R { get; set; }
         public int S { get; set; }
@@ -14,6 +15,7 @@
             {
                 Id = Id,
                 QuestId = QuestId,
+                UserId = UserId,
                 Q = Q,
                 R = R,
                 S = S,
@@ -26,6 +28,7 @@
             {
                 Id = hexAssignment.Id,
                 QuestId = hexAssignment.QuestId,
+                UserId = hexAssignment.UserId,
                 Q = hexAssignment.Q,
                 R = hexAssignment.R,
                 S = hexAssignment.S,

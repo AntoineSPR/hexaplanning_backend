@@ -24,7 +24,7 @@ namespace Procrastinator.Models
         public UserApp User { get; set; }
 
         [ForeignKey(nameof(User))]
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
 
         public int EstimatedTime { get; set; }
 

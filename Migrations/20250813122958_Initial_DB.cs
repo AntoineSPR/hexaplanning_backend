@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Procrastinator.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial_Migration : Migration
+    public partial class Initial_DB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,8 +18,7 @@ namespace Procrastinator.Migrations
                 name: "AspNetRoles",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "text", nullable: false),
-                    Discriminator = table.Column<string>(type: "character varying(13)", maxLength: 13, nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "text", nullable: true)
@@ -33,7 +32,7 @@ namespace Procrastinator.Migrations
                 name: "AspNetUsers",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "text", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     FirstName = table.Column<string>(type: "text", nullable: false),
                     LastName = table.Column<string>(type: "text", nullable: false),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -62,7 +61,7 @@ namespace Procrastinator.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    RoleId = table.Column<string>(type: "text", nullable: false),
+                    RoleId = table.Column<Guid>(type: "uuid", nullable: false),
                     ClaimType = table.Column<string>(type: "text", nullable: true),
                     ClaimValue = table.Column<string>(type: "text", nullable: true)
                 },
@@ -83,7 +82,7 @@ namespace Procrastinator.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    UserId = table.Column<string>(type: "text", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     ClaimType = table.Column<string>(type: "text", nullable: true),
                     ClaimValue = table.Column<string>(type: "text", nullable: true)
                 },
@@ -105,7 +104,7 @@ namespace Procrastinator.Migrations
                     LoginProvider = table.Column<string>(type: "text", nullable: false),
                     ProviderKey = table.Column<string>(type: "text", nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "text", nullable: true),
-                    UserId = table.Column<string>(type: "text", nullable: false)
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -122,8 +121,8 @@ namespace Procrastinator.Migrations
                 name: "AspNetUserRoles",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "text", nullable: false),
-                    RoleId = table.Column<string>(type: "text", nullable: false)
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    RoleId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -146,7 +145,7 @@ namespace Procrastinator.Migrations
                 name: "AspNetUserTokens",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "text", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     LoginProvider = table.Column<string>(type: "text", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Value = table.Column<string>(type: "text", nullable: true)
@@ -169,11 +168,11 @@ namespace Procrastinator.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Title = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
-                    UserId = table.Column<string>(type: "text", nullable: false),
-                    ExperienceGain = table.Column<int>(type: "integer", nullable: false),
-                    Apprehension = table.Column<int>(type: "integer", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     EstimatedTime = table.Column<int>(type: "integer", nullable: false),
-                    Difficulty = table.Column<int>(type: "integer", nullable: false)
+                    Priority = table.Column<int>(type: "integer", nullable: false),
+                    IsDone = table.Column<bool>(type: "boolean", nullable: false),
+                    IsAssigned = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -186,13 +185,42 @@ namespace Procrastinator.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "HexAssignments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Q = table.Column<int>(type: "integer", nullable: false),
+                    R = table.Column<int>(type: "integer", nullable: false),
+                    S = table.Column<int>(type: "integer", nullable: false),
+                    QuestId = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HexAssignments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_HexAssignments_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_HexAssignments_Quests_QuestId",
+                        column: x => x.QuestId,
+                        principalTable: "Quests",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
-                columns: new[] { "Id", "ConcurrencyStamp", "Discriminator", "Name", "NormalizedName" },
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "12ccaa16-0d50-491e-8157-ec1b133cf120", "12ccaa16-0d50-491e-8157-ec1b133cf120", "Role", "Client", "CLIENT" },
-                    { "63a2a3ac-442e-4e4c-ad91-1443122b5a6a", "63a2a3ac-442e-4e4c-ad91-1443122b5a6a", "Role", "Admin", "ADMIN" }
+                    { new Guid("12ccaa16-0d50-491e-8157-ec1b133cf120"), "49b0d474-5c69-45d6-963e-9bf140fe4b0f", "Client", "CLIENT" },
+                    { new Guid("63a2a3ac-442e-4e4c-ad91-1443122b5a6a"), "6ab6a86c-1be8-4ecc-9436-f61946f58552", "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -233,6 +261,23 @@ namespace Procrastinator.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_HexAssignments_Q_R_S_UserId",
+                table: "HexAssignments",
+                columns: new[] { "Q", "R", "S", "UserId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_HexAssignments_QuestId",
+                table: "HexAssignments",
+                column: "QuestId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_HexAssignments_UserId",
+                table: "HexAssignments",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Quests_UserId",
                 table: "Quests",
                 column: "UserId");
@@ -257,10 +302,13 @@ namespace Procrastinator.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Quests");
+                name: "HexAssignments");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Quests");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

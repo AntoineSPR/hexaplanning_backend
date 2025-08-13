@@ -1,11 +1,15 @@
-﻿using System.Reflection.Emit;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Procrastinator.Models;
 
 namespace Procrastinator.Context
 {
-    public class DataContext : IdentityDbContext<UserApp>
+    // Déclaration de la classe Role qui hérite de IdentityRole<Guid> :
+    public class Role : IdentityRole<Guid>
+    {
+    }
+    public class DataContext : IdentityDbContext<UserApp, Role, Guid>
     {
         /// <summary>
         /// Constructeur de base de la classe DataContext : permet de configurer le contexte de la BDD
@@ -29,25 +33,26 @@ namespace Procrastinator.Context
                 .WithOne(h => h.Quest)
                 .HasForeignKey<HexAssignment>(h => h.QuestId);
 
+            // Il ne peut y avoir qu'un seul hexAssignment correspondant à chaque jeu de coordonnées, par utilisateur :
             builder.Entity<HexAssignment>()
-                .HasIndex(h => new { h.Q, h.R, h.S })
+                .HasIndex(h => new { h.Q, h.R, h.S, h.UserId })
                 .IsUnique();
 
             var roles = new List<Role>()
             {
                 new Role()
                 {
-                    Id = "63a2a3ac-442e-4e4c-ad91-1443122b5a6a",
+                    Id = Guid.Parse("63a2a3ac-442e-4e4c-ad91-1443122b5a6a"),
                     Name = "Admin",
                     NormalizedName = "ADMIN",
-                    ConcurrencyStamp = "63a2a3ac-442e-4e4c-ad91-1443122b5a6a",
+                    ConcurrencyStamp = Guid.NewGuid().ToString(),
                 },
                 new Role()
                 {
-                    Id = "12ccaa16-0d50-491e-8157-ec1b133cf120",
+                    Id = Guid.Parse("12ccaa16-0d50-491e-8157-ec1b133cf120"),
                     Name = "Client",
                     NormalizedName = "CLIENT",
-                    ConcurrencyStamp = "12ccaa16-0d50-491e-8157-ec1b133cf120",
+                    ConcurrencyStamp = Guid.NewGuid().ToString(),
                 },
 
             };

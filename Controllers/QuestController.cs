@@ -12,7 +12,7 @@ namespace Procrastinator.Controllers
     [Authorize]
     [ApiController]
     [CheckUser]
-    public class QuestController: ControllerBase
+    public class QuestController : ControllerBase
     {
         private readonly QuestService questService;
         public QuestController(QuestService questService)
@@ -23,84 +23,115 @@ namespace Procrastinator.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllQuests()
         {
-            var quests = await questService.GetAllQuestsAsync(HttpContext.Items["UserId"] as string ?? "");
-            return Ok(quests);
+            if (HttpContext.Items["UserId"] is Guid userId)
+            {
+                var quests = await questService.GetAllQuestsAsync(userId);
+                return Ok(quests);
+            }
+            return Unauthorized();
         }
 
         [HttpGet("pending")]
         public async Task<IActionResult> GetAllPendingQuests()
         {
-            var pending_quests = await questService.GetAllPendingQuestsAsync(HttpContext.Items["UserId"] as string ?? "");
-            return Ok(pending_quests);
+            if (HttpContext.Items["UserId"] is Guid userId)
+            {
+                var pending_quests = await questService.GetAllPendingQuestsAsync(userId);
+                return Ok(pending_quests);
+            }
+            return Unauthorized();
         }
 
         [HttpGet("completed")]
         public async Task<IActionResult> GetAllCompletedQuests()
         {
-            var completed_quests = await questService.GetAllCompletedQuestsAsync(HttpContext.Items["UserId"] as string ?? "");
-            return Ok(completed_quests);
+            if (HttpContext.Items["UserId"] is Guid userId)
+            {
+                var completed_quests = await questService.GetAllCompletedQuestsAsync(userId);
+                return Ok(completed_quests);
+            }
+            return Unauthorized();
         }
 
         [HttpGet("unassigned_pending")]
         public async Task<IActionResult> GetAllUnassignedPendingQuests()
         {
-            var unassigned_pending_quests = await questService.GetAllUnassignedPendingQuestsAsync(HttpContext.Items["UserId"] as string ?? "");
-            return Ok(unassigned_pending_quests);
+            if (HttpContext.Items["UserId"] is Guid userId)
+            {
+                var unassigned_pending_quests = await questService.GetAllUnassignedPendingQuestsAsync(userId);
+                return Ok(unassigned_pending_quests);
+            }
+            return Unauthorized();
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetQuestById(Guid id)
         {
-            var quest = await questService.GetQuestByIdAsync(id,HttpContext.Items["UserId"] as string ?? "");
-            if (quest == null)
+            if (HttpContext.Items["UserId"] is Guid userId)
             {
-                return NotFound();
-            }
-            return Ok(quest);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> CreateQuest([FromBody] QuestDTO questDto)
-        {
-            var userId = HttpContext.Items["UserId"] as string;
-            try
-            {
-                questDto.UserId = userId;
-                var createdQuest = await questService.CreateQuestAsync(questDto);
-                return CreatedAtAction(nameof(GetQuestById), new { id = createdQuest.Id }, createdQuest);
-            } catch (DbUpdateException ex) when (ex.InnerException is PostgresException pgEx && pgEx.SqlState == "23505")
-            {
-                return Conflict(new { message = "Une quête est déjà associée à cet hexagone" });
-            }
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateQuest(Guid id, [FromBody] QuestDTO updatedQuest)
-        {
-            var userId = HttpContext.Items["UserId"] as string;
-            try
-            {
-                var quest = await questService.UpdateQuestAsync(id, updatedQuest, HttpContext.Items["UserId"] as string ?? "");
+                var quest = await questService.GetQuestByIdAsync(id, userId);
                 if (quest == null)
                 {
                     return NotFound();
                 }
                 return Ok(quest);
-            } catch (DbUpdateException ex) when (ex.InnerException is PostgresException pgEx && pgEx.SqlState == "23505")
-            {
-                return Conflict(new { message = "Une quête est déjà associée à cet hexagone" });
             }
+            return Unauthorized();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateQuest([FromBody] QuestDTO questDto)
+        {
+            if (HttpContext.Items["UserId"] is Guid userId)
+            {
+                try
+                {
+                    var createdQuest = await questService.CreateQuestAsync(questDto, userId);
+                    return CreatedAtAction(nameof(GetQuestById), new { id = createdQuest.Id }, createdQuest);
+                }
+                catch (DbUpdateException ex) when (ex.InnerException is PostgresException pgEx && pgEx.SqlState == "23505")
+                {
+                    return Conflict(new { message = "Une quête est déjà associée à cet hexagone" });
+                }
+            }
+            return Unauthorized();
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateQuest(Guid id, [FromBody] QuestDTO updatedQuest)
+        {
+            if (HttpContext.Items["UserId"] is Guid userId)
+            {
+                try
+                {
+                    var quest = await questService.UpdateQuestAsync(id, updatedQuest, userId);
+                    if (quest == null)
+                    {
+                        return NotFound();
+                    }
+                    return Ok(quest);
+                }
+                catch (DbUpdateException ex) when (ex.InnerException is PostgresException pgEx && pgEx.SqlState == "23505")
+                {
+                    return Conflict(new { message = "Une quête est déjà associée à cet hexagone" });
+                }
+            }
+            return Unauthorized();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteQuest(Guid id)
         {
-            var result = await questService.DeleteQuestAsync(id, HttpContext.Items["UserId"] as string ?? "");
-            if (!result)
+            if (HttpContext.Items["UserId"] is Guid userId)
             {
-                return NotFound();
+                var result = await questService.DeleteQuestAsync(id, userId);
+                if (!result)
+                {
+                    return NotFound();
+                }
+                return NoContent();
             }
-            return NoContent();
+            return Unauthorized();
         }
     }
 }

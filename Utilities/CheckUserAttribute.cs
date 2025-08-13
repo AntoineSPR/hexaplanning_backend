@@ -9,13 +9,13 @@ public class CheckUserAttribute : ActionFilterAttribute
         var user = context.HttpContext.User;
         var userId = CheckUser.GetUserIdFromClaim(user);
 
-        if (string.IsNullOrEmpty(userId))
+        if (!userId.HasValue)
         {
             context.Result = new UnauthorizedResult();
             return;
         }
 
-        context.HttpContext.Items["UserId"] = userId;
+        context.HttpContext.Items["UserId"] = userId.Value;
 
         base.OnActionExecuting(context);
     }

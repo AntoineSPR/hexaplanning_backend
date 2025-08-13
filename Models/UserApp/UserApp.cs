@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Procrastinator.Models
 {
-    public class UserApp : IdentityUser
+    public class UserApp : IdentityUser<Guid>
     {
         [Required]
         public string FirstName { get; set; }

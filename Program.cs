@@ -99,9 +99,9 @@ void ConfigureControllers(IServiceCollection services)
 void ConfigureIdentity(IServiceCollection services)
 {
     services
-        .AddIdentity<UserApp, Role>()
+        .AddIdentity<UserApp, Procrastinator.Context.Role>()
         .AddEntityFrameworkStores<DataContext>()
-        .AddRoleManager<RoleManager<Role>>()
+        .AddRoleManager<RoleManager<Procrastinator.Context.Role>>()
         .AddUserManager<UserManager<UserApp>>()
         .AddSignInManager<SignInManager<UserApp>>()
         .AddDefaultTokenProviders();
