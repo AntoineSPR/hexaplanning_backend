@@ -18,5 +18,9 @@ namespace Procrastinator.Models
         [Required]
         [ForeignKey(nameof(QuestId))]
         public Quest Quest { get; set; }
+        [Required]
+        public UserApp User { get; set; }
+        [ForeignKey(nameof(User))]
+        public Guid UserId { get; set; }
     }
 }

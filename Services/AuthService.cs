@@ -1,12 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Procrastinator.Context;
 using Procrastinator.Models;
 using Procrastinator.Utilities;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace Procrastinator.Services
 {
@@ -26,16 +26,15 @@ namespace Procrastinator.Services
 
         public async Task<UserResponseDTO?> Register(UserCreateDTO model)
         {
+            // Vérifier si l'adresse e-mail est déjà utilisée
+            bool isEmailAlreadyUsed = await IsEmailAlreadyUsedAsync(model.Email);
+            if (isEmailAlreadyUsed)
+            {
+                throw new Exception("Email déjà utilisé");
+            }
+
             try
             {
-                bool isEmailAlreadyUsed = await IsEmailAlreadyUsedAsync(model.Email);
-
-                // Vérifier si l'adresse e-mail est déjà utilisée
-                if (isEmailAlreadyUsed)
-                {
-                    throw new Exception("Email already in use");
-                }
-
                 // Créer un nouvel utilisateur en utilisant les données du modèle et la base de données contextuelle
                 UserApp newUser = model.ToUserApp();
 
@@ -62,9 +61,10 @@ namespace Procrastinator.Services
                 );
 
                 return newUser.ToUserResponseDTO();
-            } catch
+            }
+            catch
             {
-                throw;
+                throw new Exception("Une erreur s'est produite");
             }
         }
 
@@ -83,13 +83,14 @@ namespace Procrastinator.Services
                 await context.SaveChangesAsync();
 
                 return user.ToUserResponseDTO();
-            } catch
+            }
+            catch
             {
                 throw;
             }
         }
 
-        public async Task<object> Login(UserLoginDTO model, HttpResponse response)
+        public async Task<object> Login(UserLoginDTO model)
         {
             try
             {
@@ -108,11 +109,13 @@ namespace Procrastinator.Services
 
                 var userRoles = await userManager.GetRolesAsync(user);
 
-                return new{
-                        Token = await GenerateAccessTokenAsync(user),
-                        User = user.ToUserResponseDTO(userRoles.ToList()),
+                return new LoginResponseDTO
+                {
+                    Token = await GenerateAccessTokenAsync(user),
+                    User = user.ToUserResponseDTO(userRoles.ToList()),
                 };
-            } catch
+            }
+            catch
             {
                 throw;
             }
@@ -134,7 +137,8 @@ namespace Procrastinator.Services
 
                 var authClaims = new List<Claim>
             {
-                new Claim(type: ClaimTypes.Email, value: user.Email),
+                new Claim(type: ClaimTypes.Email, value: user.Email ?? string.Empty),
+                new Claim(type: ClaimTypes.NameIdentifier, value: user.Id.ToString()),
             };
 
                 foreach (var userRole in userRoles)
@@ -153,7 +157,8 @@ namespace Procrastinator.Services
                 context.Entry(user).State = EntityState.Modified;
 
                 return new JwtSecurityTokenHandler().WriteToken(token);
-            } catch
+            }
+            catch
             {
                 throw;
             }

@@ -13,10 +13,8 @@ namespace Procrastinator.Models
 
         public string Description { get; set; }
 
-        // TODO : Change
-        //[Required]
         [ForeignKey("User")]
-        public string? UserId { get; set; }
+        public Guid UserId { get; set; }
 
         public int EstimatedTime { get; set; }
 

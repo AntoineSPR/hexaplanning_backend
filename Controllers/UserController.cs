@@ -40,9 +40,9 @@ namespace Procrastinator.Controllers
                     var result = await authService.Register(model);
 
                     return Ok(result);
-                } catch
+                } catch(Exception e)
                 {
-                    throw;
+                return BadRequest(e.Message);
                 }
             }
 
@@ -50,8 +50,6 @@ namespace Procrastinator.Controllers
             [EnableCors]
             [Route("update")]
             [HttpPatch]
-            [AllowAnonymous]
-
             public async Task<IActionResult> Update([FromBody] UserCreateDTO model)
             {
                 try
@@ -75,19 +73,19 @@ namespace Procrastinator.Controllers
             [AllowAnonymous]
             [Route("login")]
             [HttpPost]
-            public async Task<IActionResult> Login([FromBody] UserLoginDTO model)
+            public async Task<ActionResult<LoginResponseDTO>> Login([FromBody] UserLoginDTO model)
             {
                 try
                 {
                     if (!ModelState.IsValid) { throw new Exception("Login failed"); };
 
-                    var result = await authService.Login(model, HttpContext.Response);
+                    var result = await authService.Login(model);
     
                     return Ok(result);
                     
                 } catch
                 {
-                    throw;
+                return new StatusCodeResult(StatusCodes.Status400BadRequest);
                 }
             }
 

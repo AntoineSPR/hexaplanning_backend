@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using Procrastinator.Models;
@@ -7,94 +8,126 @@ using Procrastinator.Services;
 namespace Procrastinator.Controllers
 {
     [Route("[controller]")]
-    //TODO : Change
-    //[Authorize]
+    [Authorize]
     [ApiController]
-    public class HexAssignmentController: ControllerBase
+    [CheckUser]
+    public class HexAssignmentController : ControllerBase
     {
         private readonly HexAssignmentService hexAssignmentService;
         public HexAssignmentController(HexAssignmentService hexAssignmentService)
         {
             this.hexAssignmentService = hexAssignmentService;
         }
+
         [HttpGet]
         public async Task<IActionResult> GetAllHexAssignments()
         {
-            var hexAssignments = await hexAssignmentService.GetAllHexAssignmentsAsync();
-            return Ok(hexAssignments);
+            if (HttpContext.Items["UserId"] is Guid userId)
+            {
+                var hexAssignments = await hexAssignmentService.GetAllHexAssignmentsAsync(userId);
+                return Ok(hexAssignments);
+            }
+            return Unauthorized();
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetHexAssignmentById(int id)
         {
-            var hexAssignment = await hexAssignmentService.GetHexAssignmentByIdAsync(id);
-            if (hexAssignment == null)
+            if (HttpContext.Items["UserId"] is Guid userId)
             {
-                return NotFound();
+                var hexAssignment = await hexAssignmentService.GetHexAssignmentByIdAsync(id, userId);
+                if (hexAssignment == null)
+                {
+                    return NotFound();
+                }
+                return Ok(hexAssignment);
             }
-            return Ok(hexAssignment);
+            return Unauthorized();
         }
 
         [HttpGet("quest/{questId}")]
         public async Task<IActionResult> GetHexAssignmentByQuestId(Guid questId)
         {
-            var hexAssignment = await hexAssignmentService.GetHexAssignmentByQuestIdAsync(questId);
-            if (hexAssignment == null)
+            if (HttpContext.Items["UserId"] is Guid userId)
             {
-                return NotFound();
+                var hexAssignment = await hexAssignmentService.GetHexAssignmentByQuestIdAsync(questId, userId);
+                if (hexAssignment == null)
+                {
+                    return NotFound();
+                }
+                return Ok(hexAssignment);
             }
-            return Ok(hexAssignment);
+            return Unauthorized();
         }
 
         [HttpGet("coordinates/{q}/{r}/{s}")]
         public async Task<IActionResult> GetHexAssignmentByCoordinates(int q, int r, int s)
         {
-            var hexAssignment = await hexAssignmentService.GetHexAssignmentByCoordinatesAsync(q, r, s);
-            if (hexAssignment == null)
+            if (HttpContext.Items["UserId"] is Guid userId)
             {
-                return NotFound();
+                var hexAssignment = await hexAssignmentService.GetHexAssignmentByCoordinatesAsync(q, r, s, userId);
+                if (hexAssignment == null)
+                {
+                    return NotFound();
+                }
+                return Ok(hexAssignment);
             }
-            return Ok(hexAssignment);
+            return Unauthorized();
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateHexAssignment([FromBody] HexAssignmentDTO hexAssignmentDto)
         {
-            try { 
-            var createdHexAssignment = await hexAssignmentService.CreateHexAssignmentAsync(hexAssignmentDto);
-            return CreatedAtAction(nameof(GetHexAssignmentById), new { id = createdHexAssignment.Id }, createdHexAssignment);
-            } catch (DbUpdateException ex) when(ex.InnerException is PostgresException pgEx && pgEx.SqlState == "23505")
+            if (HttpContext.Items["UserId"] is Guid userId)
             {
-                return Conflict(new { message = "Une quête est déjà associée à cet hexagone" });
+                try
+                {
+                    var createdHexAssignment = await hexAssignmentService.CreateHexAssignmentAsync(hexAssignmentDto, userId);
+                    return CreatedAtAction(nameof(GetHexAssignmentById), new { id = createdHexAssignment.Id }, createdHexAssignment);
+                }
+                catch (DbUpdateException ex) when (ex.InnerException is PostgresException pgEx && pgEx.SqlState == "23505")
+                {
+                    return Conflict(new { message = "Une quête est déjà associée à cet hexagone" });
+                }
             }
+            return Unauthorized();
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateHexAssignment(int id, [FromBody] HexAssignmentDTO updatedHexAssignment)
         {
-            try
+            if (HttpContext.Items["UserId"] is Guid userId)
             {
-                var result = await hexAssignmentService.UpdateHexAssignmentAsync(id, updatedHexAssignment);
-                if (result == null)
+                try
                 {
-                    return NotFound();
+                    var result = await hexAssignmentService.UpdateHexAssignmentAsync(id, updatedHexAssignment, userId);
+                    if (result == null)
+                    {
+                        return NotFound();
+                    }
+                    return Ok(result);
                 }
-                return Ok(result);
-            } catch (DbUpdateException ex) when (ex.InnerException is PostgresException pgEx && pgEx.SqlState == "23505")
-            {
-                return Conflict(new { message = "Une quête est déjà associée à cet hexagone" });
+                catch (DbUpdateException ex) when (ex.InnerException is PostgresException pgEx && pgEx.SqlState == "23505")
+                {
+                    return Conflict(new { message = "Une quête est déjà associée à cet hexagone" });
+                }
             }
+            return Unauthorized();
         }
 
         [HttpDelete("coordinates/{q}/{r}/{s}")]
         public async Task<IActionResult> DeleteHexAssignment(int q, int r, int s)
         {
-            var result = await hexAssignmentService.DeleteHexAssignmentAsync(q, r, s);
-            if (!result)
+            if (HttpContext.Items["UserId"] is Guid userId)
             {
-                return NotFound();
+                var result = await hexAssignmentService.DeleteHexAssignmentAsync(q, r, s, userId);
+                if (!result)
+                {
+                    return NotFound();
+                }
+                return NoContent();
             }
-            return NoContent();
+            return Unauthorized();
         }
     }
 }
