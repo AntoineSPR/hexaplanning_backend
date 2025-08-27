@@ -89,6 +89,32 @@ namespace Procrastinator.Services
                 throw;
             }
         }
+        public async Task<bool> ChangePassword(ChangePasswordDTO passwordData, ClaimsPrincipal userPrincipal)
+        {
+            try
+            {
+                var user = UserService.GetUserFromClaim(userPrincipal, context);
+                if (user is null)
+                {
+                    throw new Exception("Utilisateur non trouvé");
+                }
+
+                var result = await userManager.ChangePasswordAsync(user, passwordData.CurrentPassword, passwordData.NewPassword);
+
+                if (!result.Succeeded)
+                {
+                    var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                    throw new Exception($"Erreur lors du changement de mot de passe : {errors}");
+                }
+
+                return true;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
 
         public async Task<object> Login(UserLoginDTO model)
         {

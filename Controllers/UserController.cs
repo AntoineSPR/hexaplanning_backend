@@ -70,7 +70,30 @@ namespace Procrastinator.Controllers
             }
 
 
-            [AllowAnonymous]
+        [EnableCors]
+        [Route("change-password")]
+        [HttpPut]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO passwordData)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var result = await authService.ChangePassword(passwordData, HttpContext.User);
+
+                return Ok(new { message = "Mot de passe modifié avec succès" });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { message = e.Message });
+            }
+        }
+
+
+        [AllowAnonymous]
             [Route("login")]
             [HttpPost]
             public async Task<ActionResult<LoginResponseDTO>> Login([FromBody] UserLoginDTO model)
