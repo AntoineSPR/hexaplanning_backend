@@ -14,10 +14,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
-    #   - name: Get version
-    #     id: set_version
-    #     run: echo "IMAGE_VERSION=rc-1.0.0" >> $GITHUB_ENV
+      #   - name: Get version
+      #     id: set_version
+      #     run: echo "IMAGE_VERSION=rc-1.0.0" >> $GITHUB_ENV
 
       - name: Checkout code
         uses: actions/checkout@v3
@@ -27,9 +26,9 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-          
+
       - name: Build Docker image
-        run: docker build -t antoinespr/hexaplanning-api:dev1 ./Procrastinator
+        run: docker build -t antoinespr/hexaplanning-api:dev1 ../../Procrastinator
         # run: docker build -t antoinespr/hexaplanning-api:prod ./Procrastinator
 
       - name: Push image to Docker Hub
@@ -46,7 +45,6 @@ jobs:
         #     export IMAGE_VERSION=${{ env.IMAGE_VERSION }}
         #     docker pull antoinespr/hexaplanning-api:${{ env.IMAGE_VERSION }}
         #     docker compose -f /root/hexaplanning/backend/docker-compose.yml up -d --force-recreate
-          # script: |
-          #   docker pull antoinespr/hexaplanning-api:prod
-          #   docker compose -f /root/hexaplanning/backend/docker-compose.yml up --build -d --force-recreate
-
+        # script: |
+        #   docker pull antoinespr/hexaplanning-api:prod
+        #   docker compose -f /root/hexaplanning/backend/docker-compose.yml up --build -d --force-recreate
