@@ -28,7 +28,7 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
       - name: Build Docker image
-        run: docker build -t antoinespr/hexaplanning-api:dev1 ../../../Procrastinator
+        run: docker build -t antoinespr/hexaplanning-api:dev1 .
         # run: docker build -t antoinespr/hexaplanning-api:prod ./Procrastinator
 
       - name: Push image to Docker Hub
