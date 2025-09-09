@@ -28,13 +28,13 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
           
-    #   - name: Build Docker image
-    #     run: docker build -t mahdimcheik/skill-hive-api:${{ env.IMAGE_VERSION }} ./TerminalApi
-    #     # run: docker build -t mahdimcheik/skill-hive-api:prod ./TerminalApi
+      - name: Build Docker image
+        run: docker build -t antoinespr/hexaplanning-api:dev1 ./Procrastinator
+        # run: docker build -t antoinespr/hexaplanning-api:prod ./Procrastinator
 
-    #   - name: Push image to Docker Hub
-    #     run: docker push mahdimcheik/skill-hive-api:${{ env.IMAGE_VERSION }}
-    #     # run: docker push mahdimcheik/skill-hive-api:prod
+      - name: Push image to Docker Hub
+        run: docker push antoinespr/hexaplanning-api:dev1
+        # run: docker push antoinespr/hexaplanning-api:prod
 
       - name: Deploy on VPS via SSH
         uses: appleboy/ssh-action@v1.0.0
@@ -44,9 +44,9 @@ jobs:
           key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
         #   script: |
         #     export IMAGE_VERSION=${{ env.IMAGE_VERSION }}
-        #     docker pull mahdimcheik/skill-hive-api:${{ env.IMAGE_VERSION }}
-        #     docker compose -f /root/skillhive/backend/docker-compose.yml up -d --force-recreate
+        #     docker pull antoinespr/hexaplanning-api:${{ env.IMAGE_VERSION }}
+        #     docker compose -f /root/hexaplanning/backend/docker-compose.yml up -d --force-recreate
           # script: |
-          #   docker pull mahdimcheik/skill-hive-api:prod
-          #   docker compose -f /root/skillhive/backend/docker-compose.yml up --build -d --force-recreate 
+          #   docker pull antoinespr/hexaplanning-api:prod
+          #   docker compose -f /root/hexaplanning/backend/docker-compose.yml up --build -d --force-recreate
 
