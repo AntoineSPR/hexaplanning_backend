@@ -1,0 +1,21 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Procrastinator.Models
+{
+    public class ChangePasswordDTO
+    {
+        [Required]
+        [DataType(DataType.Password)]
+        public string CurrentPassword { get; set; } = null!;
+
+        [Required]
+        [DataType(DataType.Password)]
+        [StringLength(100, MinimumLength = 2)]
+        public string NewPassword { get; set; } = null!;
+
+        [Required]
+        [DataType(DataType.Password)]
+        [Compare("NewPassword", ErrorMessage = "Les mots de passe ne correspondent pas.")]
+        public string ConfirmPassword { get; set; } = null!;
+    }
+}
