@@ -81,6 +81,10 @@ bool IsOriginAllowed(string origin)
                     "http://localhost:7113",
                     "https://localhost:7113",
                     "https://localhost:7168",
+                    "http://hexaplanning.fr",
+                    "https://hexaplanning.fr",
+                    "http://api.hexaplanning.fr",
+                    "https://api.hexaplanning.fr",
                     Env.API_BACK_URL,
                     Env.API_FRONT_URL,
             };
