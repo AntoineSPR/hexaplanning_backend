@@ -15,6 +15,11 @@ var services = builder.Services;
 ConfigureServices(services);
 var app = builder.Build();
 ConfigureMiddlewarePipeline(app);
+using (var scope = app.Services.CreateScope())
+{
+    var dataContext = scope.ServiceProvider.GetRequiredService<DataContext>();
+    dataContext.Database.Migrate();
+}
 app.Run();
 
 #region Services
