@@ -46,6 +46,7 @@ void ConfigureServices(IServiceCollection services)
     services.AddDbContext<DataContext>(options =>
     {
         options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+        Console.WriteLine("Connection String: " + builder.Configuration.GetConnectionString("DefaultConnection"));
     });
     {
         ConfigureCors(services);
