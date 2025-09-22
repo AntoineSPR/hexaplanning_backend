@@ -11,6 +11,7 @@ using Procrastinator.Services;
 using Procrastinator.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
 var services = builder.Services;
 ConfigureServices(services);
 var app = builder.Build();
@@ -30,6 +31,7 @@ void ConfigureServices(IServiceCollection services)
     services.AddScoped<UserService>();
     services.AddScoped<QuestService>();
     services.AddScoped<HexAssignmentService>();
+    services.AddScoped<FixturesService>();
 
     // Logger
     services.AddLogging(loggingBuilder =>
@@ -46,7 +48,6 @@ void ConfigureServices(IServiceCollection services)
     services.AddDbContext<DataContext>(options =>
     {
         options.UseNpgsql(Env.CONNECTION_STRING);
-        Console.WriteLine("Connection String: " + Env.CONNECTION_STRING);
     });
     {
         ConfigureCors(services);

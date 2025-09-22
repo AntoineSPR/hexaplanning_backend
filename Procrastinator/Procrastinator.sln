@@ -4,6 +4,8 @@ VisualStudioVersion = 17.13.35931.197
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Procrastinator", "Procrastinator.csproj", "{92536FA4-358A-4D53-8A89-9A90804EB81A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestsUnitaires", "TestsUnitaires\TestsUnitaires.csproj", "{35156E22-B764-9C8A-D59A-47E70B4767E3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -14,6 +16,10 @@ Global
 		{92536FA4-358A-4D53-8A89-9A90804EB81A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{92536FA4-358A-4D53-8A89-9A90804EB81A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{92536FA4-358A-4D53-8A89-9A90804EB81A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35156E22-B764-9C8A-D59A-47E70B4767E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35156E22-B764-9C8A-D59A-47E70B4767E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35156E22-B764-9C8A-D59A-47E70B4767E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35156E22-B764-9C8A-D59A-47E70B4767E3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
