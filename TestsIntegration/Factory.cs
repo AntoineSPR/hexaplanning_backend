@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -13,20 +13,45 @@ namespace TestsIntegration;
 
 public class Factory : WebApplicationFactory<Program>, IAsyncLifetime
 {
-    private readonly PostgreSqlContainer _postgresContainer;
+    private readonly PostgreSqlContainer? _postgresContainer;
+    private readonly bool _useInMemoryDatabase;
 
     public Factory()
     {
-        _postgresContainer = new PostgreSqlBuilder()
-            .WithDatabase("testdb")
-            .WithUsername("postgres")
-            .WithPassword("admin")
-            .Build();
+        // Check if Docker is available, if not use in-memory database
+        _useInMemoryDatabase = !IsDockerAvailable();
+        
+        if (!_useInMemoryDatabase)
+        {
+            _postgresContainer = new PostgreSqlBuilder()
+                .WithDatabase("testdb")
+                .WithUsername("postgres")
+                .WithPassword("admin")
+                .Build();
+        }
+    }
+
+    private static bool IsDockerAvailable()
+    {
+        try
+        {
+            // Simple check to see if Docker is available
+            var testContainer = new PostgreSqlBuilder().Build();
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     public async Task InitializeAsync()
     {
-        await _postgresContainer.StartAsync();
+        if (!_useInMemoryDatabase && _postgresContainer != null)
+        {
+            await _postgresContainer.StartAsync();
+        }
+        
         Console.OutputEncoding = System.Text.Encoding.UTF8;
 
         Environment.SetEnvironmentVariable("API_BACK_URL", "https://localhost:7168");
@@ -40,7 +65,10 @@ public class Factory : WebApplicationFactory<Program>, IAsyncLifetime
 
     public new async Task DisposeAsync()
     {
-        await _postgresContainer.DisposeAsync();
+        if (_postgresContainer != null)
+        {
+            await _postgresContainer.DisposeAsync();
+        }
         await base.DisposeAsync();
     }
 
@@ -62,11 +90,22 @@ public class Factory : WebApplicationFactory<Program>, IAsyncLifetime
             }
 
             // Le remplacer par un qui pointe sur la base de test (overrider)
-            services.AddDbContext<DataContext>(options =>
+            if (_useInMemoryDatabase)
             {
-                options.UseNpgsql(_postgresContainer.GetConnectionString());
-                options.EnableSensitiveDataLogging();
-            });
+                services.AddDbContext<DataContext>(options =>
+                {
+                    options.UseInMemoryDatabase("TestDb");
+                    options.EnableSensitiveDataLogging();
+                });
+            }
+            else
+            {
+                services.AddDbContext<DataContext>(options =>
+                {
+                    options.UseNpgsql(_postgresContainer!.GetConnectionString());
+                    options.EnableSensitiveDataLogging();
+                });
+            }
 
             var serviceProvider = services.BuildServiceProvider();
 
