@@ -44,6 +44,7 @@ public partial class Program
         services.AddScoped<QuestService>();
         services.AddScoped<HexAssignmentService>();
         services.AddScoped<FixturesService>();
+        services.AddScoped<SendMailService>();
 
         // Logger
         services.AddLogging(loggingBuilder =>
