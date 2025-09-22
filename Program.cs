@@ -15,6 +15,11 @@ var services = builder.Services;
 ConfigureServices(services);
 var app = builder.Build();
 ConfigureMiddlewarePipeline(app);
+using (var scope = app.Services.CreateScope())
+{
+    var dataContext = scope.ServiceProvider.GetRequiredService<DataContext>();
+    dataContext.Database.Migrate();
+}
 app.Run();
 
 #region Services
@@ -40,7 +45,8 @@ void ConfigureServices(IServiceCollection services)
     // Database Context (Entity Framework Core ORM)
     services.AddDbContext<DataContext>(options =>
     {
-        options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+        options.UseNpgsql(Env.CONNECTION_STRING);
+        Console.WriteLine("Connection String: " + Env.CONNECTION_STRING);
     });
     {
         ConfigureCors(services);
@@ -81,6 +87,10 @@ bool IsOriginAllowed(string origin)
                     "http://localhost:7113",
                     "https://localhost:7113",
                     "https://localhost:7168",
+                    "http://hexaplanning.fr",
+                    "https://hexaplanning.fr",
+                    "http://api.hexaplanning.fr",
+                    "https://api.hexaplanning.fr",
                     Env.API_BACK_URL,
                     Env.API_FRONT_URL,
             };
