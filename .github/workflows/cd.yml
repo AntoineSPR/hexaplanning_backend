@@ -1,13 +1,10 @@
 name: Deploy Develop API
 
 on:
-  push:
-    branches:
-      - main
-  # workflow_run:
-  #   workflows: ["CI pipeline for the API"]
-  #   types:
-  #     - completed
+   workflow_run:
+     workflows: ["CI pipeline for the API"]
+     types:
+       - completed
 
 jobs:
   build-and-deploy:
