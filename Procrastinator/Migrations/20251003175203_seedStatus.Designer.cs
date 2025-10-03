@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Procrastinator.Context;
@@ -11,9 +12,11 @@ using Procrastinator.Context;
 namespace Procrastinator.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20251003175203_seedStatus")]
+    partial class seedStatus
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -155,14 +158,14 @@ namespace Procrastinator.Migrations
                         new
                         {
                             Id = new Guid("63a2a3ac-442e-4e4c-ad91-1443122b5a6a"),
-                            ConcurrencyStamp = "33cff182-23da-4779-8d1e-fd9b6939b324",
+                            ConcurrencyStamp = "ab7993f7-245e-4c02-babe-a710947077e7",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = new Guid("12ccaa16-0d50-491e-8157-ec1b133cf120"),
-                            ConcurrencyStamp = "42c9926e-ced4-462a-a18b-47e9646282c5",
+                            ConcurrencyStamp = "3699611e-fb73-4df4-9eea-a33556843296",
                             Name = "Client",
                             NormalizedName = "CLIENT"
                         });
@@ -232,35 +235,6 @@ namespace Procrastinator.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Priorities");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("6662dfc1-9c40-4d78-806f-34cd22e07023"),
-                            Color = "#FFA500",
-                            CreatedAt = new DateTime(2025, 10, 3, 17, 56, 31, 321, DateTimeKind.Utc).AddTicks(8825),
-                            IsArchived = false,
-                            Name = "Quête principale",
-                            UpdatedAt = new DateTime(2025, 10, 3, 17, 56, 31, 321, DateTimeKind.Utc).AddTicks(8825)
-                        },
-                        new
-                        {
-                            Id = new Guid("2281c955-b3e1-49dc-be62-6a7912bb46b3"),
-                            Color = "#FBA500",
-                            CreatedAt = new DateTime(2025, 10, 3, 17, 56, 31, 321, DateTimeKind.Utc).AddTicks(8830),
-                            IsArchived = false,
-                            Name = "Quête secondaire",
-                            UpdatedAt = new DateTime(2025, 10, 3, 17, 56, 31, 321, DateTimeKind.Utc).AddTicks(8830)
-                        },
-                        new
-                        {
-                            Id = new Guid("17c07323-d5b4-4568-b773-de3487ff30b1"),
-                            Color = "#FFF500",
-                            CreatedAt = new DateTime(2025, 10, 3, 17, 56, 31, 321, DateTimeKind.Utc).AddTicks(8832),
-                            IsArchived = false,
-                            Name = "Quête tertiaire",
-                            UpdatedAt = new DateTime(2025, 10, 3, 17, 56, 31, 321, DateTimeKind.Utc).AddTicks(8832)
-                        });
                 });
 
             modelBuilder.Entity("Procrastinator.Models.Quest", b =>
@@ -351,28 +325,28 @@ namespace Procrastinator.Migrations
                         {
                             Id = new Guid("17c07323-d5b4-4568-b773-de3487ff30b1"),
                             Color = "#FFA500",
-                            CreatedAt = new DateTime(2025, 10, 3, 17, 56, 31, 321, DateTimeKind.Utc).AddTicks(8762),
+                            CreatedAt = new DateTime(2025, 10, 3, 17, 52, 3, 480, DateTimeKind.Utc).AddTicks(5789),
                             IsArchived = false,
                             Name = "En attente",
-                            UpdatedAt = new DateTime(2025, 10, 3, 17, 56, 31, 321, DateTimeKind.Utc).AddTicks(8765)
+                            UpdatedAt = new DateTime(2025, 10, 3, 17, 52, 3, 480, DateTimeKind.Utc).AddTicks(5792)
                         },
                         new
                         {
                             Id = new Guid("2281c955-b3e1-49dc-be62-6a7912bb46b3"),
                             Color = "#FBA500",
-                            CreatedAt = new DateTime(2025, 10, 3, 17, 56, 31, 321, DateTimeKind.Utc).AddTicks(8773),
+                            CreatedAt = new DateTime(2025, 10, 3, 17, 52, 3, 480, DateTimeKind.Utc).AddTicks(5799),
                             IsArchived = false,
                             Name = "En cours",
-                            UpdatedAt = new DateTime(2025, 10, 3, 17, 56, 31, 321, DateTimeKind.Utc).AddTicks(8773)
+                            UpdatedAt = new DateTime(2025, 10, 3, 17, 52, 3, 480, DateTimeKind.Utc).AddTicks(5799)
                         },
                         new
                         {
                             Id = new Guid("6662dfc1-9c40-4d78-806f-34cd22e07023"),
                             Color = "#FFF500",
-                            CreatedAt = new DateTime(2025, 10, 3, 17, 56, 31, 321, DateTimeKind.Utc).AddTicks(8776),
+                            CreatedAt = new DateTime(2025, 10, 3, 17, 52, 3, 480, DateTimeKind.Utc).AddTicks(5802),
                             IsArchived = false,
                             Name = "Terminée",
-                            UpdatedAt = new DateTime(2025, 10, 3, 17, 56, 31, 321, DateTimeKind.Utc).AddTicks(8776)
+                            UpdatedAt = new DateTime(2025, 10, 3, 17, 52, 3, 480, DateTimeKind.Utc).AddTicks(5803)
                         });
                 });
 

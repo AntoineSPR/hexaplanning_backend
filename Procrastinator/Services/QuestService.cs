@@ -17,7 +17,8 @@ namespace Procrastinator.Services
         public async Task<List<QuestDTO>> GetAllPendingQuestsAsync(Guid userId)
         {
             var pending_quests = await context.Quests
-                .Where(x => x.UserId == userId)
+                .Where(x => x.UserId == userId )
+                //&& x.Status != )
                 //.Where(q => q.IsDone == false)
                 .ToListAsync();
             return pending_quests.Select(QuestDTO.ToQuestDTO).ToList();
