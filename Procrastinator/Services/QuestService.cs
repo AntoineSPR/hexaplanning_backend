@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Procrastinator.Context;
 using Procrastinator.Models;
+using Procrastinator.Utilities;
 
 namespace Procrastinator.Services
 {
@@ -17,17 +18,16 @@ namespace Procrastinator.Services
         public async Task<List<QuestDTO>> GetAllPendingQuestsAsync(Guid userId)
         {
             var pending_quests = await context.Quests
-                .Where(x => x.UserId == userId )
-                //&& x.Status != )
-                //.Where(q => q.IsDone == false)
+                .Where(x => x.UserId == userId 
+                && x.StatusId != HardCode.STATUS_COMPLETED_ID)
                 .ToListAsync();
             return pending_quests.Select(QuestDTO.ToQuestDTO).ToList();
         }
         public async Task<List<QuestDTO>> GetAllCompletedQuestsAsync(Guid userId)
         {
             var completed_quests = await context.Quests
-                .Where(x => x.UserId == userId)
-                //.Where(q => q.IsDone == true)
+                 .Where(x => x.UserId == userId
+                && x.StatusId == HardCode.STATUS_COMPLETED_ID)
                 .ToListAsync();
             return completed_quests.Select(QuestDTO.ToQuestDTO).ToList();
         }
@@ -35,8 +35,8 @@ namespace Procrastinator.Services
         public async Task<List<QuestDTO>> GetAllUnassignedPendingQuestsAsync(Guid userId)
         {
             var unassigned_pending_quests = await context.Quests
-                .Where(x => x.UserId == userId)
-                //.Where(q => q.IsAssigned == false && q.IsDone == false)
+                 .Where(x => x.UserId == userId
+                && x.StatusId != HardCode.STATUS_COMPLETED_ID && x.HexAssignmentId == null)
                 .ToListAsync();
             return unassigned_pending_quests.Select(QuestDTO.ToQuestDTO).ToList();
 
@@ -48,16 +48,15 @@ namespace Procrastinator.Services
             return quest == null ? null : QuestDTO.ToQuestDTO(quest);
         }
 
-        public async Task<QuestDTO> CreateQuestAsync(QuestDTO questDto, Guid userId)
+        public async Task<QuestDTO> CreateQuestAsync(QuestCreateDTO questDto, Guid userId)
         {
-            questDto.UserId = userId;
-            var quest = questDto.ToQuest();
+            var quest = questDto.ToQuest(userId);
             context.Quests.Add(quest);
             await context.SaveChangesAsync();
             return QuestDTO.ToQuestDTO(quest);
         }
 
-        public async Task<QuestDTO?> UpdateQuestAsync(Guid id, QuestDTO updatedQuest, Guid userId)
+        public async Task<QuestDTO?> UpdateQuestAsync(Guid id, QuestCreateDTO updatedQuest, Guid userId)
         {
             var quest = await context.Quests.FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
             if (quest == null)
@@ -67,9 +66,8 @@ namespace Procrastinator.Services
             quest.Title = updatedQuest.Title;
             quest.Description = updatedQuest.Description;
             quest.EstimatedTime = updatedQuest.EstimatedTime;
-            //quest.Priority = updatedQuest.Priority;
-            //quest.IsDone = updatedQuest.IsDone;
-            //quest.IsAssigned = updatedQuest.IsAssigned;
+            quest.PriorityId = updatedQuest.PriorityId;
+            quest.StatusId = updatedQuest.StatusId;
             await context.SaveChangesAsync();
             return QuestDTO.ToQuestDTO(quest);
         }

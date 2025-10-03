@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
@@ -80,7 +80,7 @@ namespace Procrastinator.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateQuest([FromBody] QuestDTO questDto)
+        public async Task<IActionResult> CreateQuest([FromBody] QuestCreateDTO questDto)
         {
             if (HttpContext.Items["UserId"] is Guid userId)
             {
