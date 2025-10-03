@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
@@ -31,7 +31,7 @@ namespace Procrastinator.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetHexAssignmentById(int id)
+        public async Task<IActionResult> GetHexAssignmentById(Guid id)
         {
             if (HttpContext.Items["UserId"] is Guid userId)
             {
@@ -94,7 +94,7 @@ namespace Procrastinator.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateHexAssignment(int id, [FromBody] HexAssignmentDTO updatedHexAssignment)
+        public async Task<IActionResult> UpdateHexAssignment(Guid id, [FromBody] HexAssignmentDTO updatedHexAssignment)
         {
             if (HttpContext.Items["UserId"] is Guid userId)
             {

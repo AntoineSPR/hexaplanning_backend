@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Procrastinator.Models;
@@ -67,5 +67,8 @@ namespace Procrastinator.Context
         public DbSet<Quest> Quests { get; set; }
 
         public DbSet<HexAssignment> HexAssignments { get; set; }
+        public DbSet<Status> Statuses { get; set; }
+        public DbSet<Priority> Priorities { get; set; }
+
     }
 }

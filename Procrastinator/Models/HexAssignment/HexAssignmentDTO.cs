@@ -1,8 +1,8 @@
-﻿namespace Procrastinator.Models
+namespace Procrastinator.Models
 {
     public class HexAssignmentDTO
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public Guid QuestId { get; set; }
         public Guid UserId { get; set; }
         public int Q { get; set; }

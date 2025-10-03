@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Procrastinator.Context;
 using Procrastinator.Models;
 
@@ -14,7 +14,7 @@ namespace Procrastinator.Services
             return hexAssignments.Select(HexAssignmentDTO.ToHexAssignmentDTO).ToList();
         }
 
-        public async Task<HexAssignmentDTO?> GetHexAssignmentByIdAsync(int id, Guid userId)
+        public async Task<HexAssignmentDTO?> GetHexAssignmentByIdAsync(Guid id, Guid userId)
         {
             var hexAssignment = await context.HexAssignments.Include(x => x.Quest).FirstOrDefaultAsync(x => x.Quest.UserId == userId && x.Id == id);
             return hexAssignment == null ? null : HexAssignmentDTO.ToHexAssignmentDTO(hexAssignment);
@@ -42,7 +42,7 @@ namespace Procrastinator.Services
             return HexAssignmentDTO.ToHexAssignmentDTO(hexAssignment);
         }
 
-        public async Task<HexAssignmentDTO?> UpdateHexAssignmentAsync(int id, HexAssignmentDTO updatedHexAssignment, Guid userId)
+        public async Task<HexAssignmentDTO?> UpdateHexAssignmentAsync(Guid id, HexAssignmentDTO updatedHexAssignment, Guid userId)
         {
             var hexAssignment = await context.HexAssignments.FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
             if (hexAssignment == null)

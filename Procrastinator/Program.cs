@@ -29,6 +29,7 @@ public partial class Program
             {
                 var dataContext = scope.ServiceProvider.GetRequiredService<DataContext>();
                 dataContext.Database.Migrate();
+                //dataContext.Database.EnsureCreated();
             }
         }
         

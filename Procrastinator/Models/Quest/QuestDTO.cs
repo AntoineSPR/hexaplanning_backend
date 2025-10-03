@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
 namespace Procrastinator.Models
@@ -25,7 +25,7 @@ namespace Procrastinator.Models
 
         public bool IsAssigned { get; set; }
 
-        public int? HexAssignmentId => HexAssignment?.Id;
+        public Guid? HexAssignmentId => HexAssignment?.Id;
         public HexAssignmentDTO? HexAssignment { get; set; }
 
         public Quest ToQuest()
@@ -36,9 +36,9 @@ namespace Procrastinator.Models
                 Description = Description,
                 UserId = UserId,
                 EstimatedTime = EstimatedTime,
-                Priority = Priority,
-                IsDone = IsDone,
-                IsAssigned = IsAssigned,
+                //Priority = Priority,
+                //IsDone = IsDone,
+                //IsAssigned = IsAssigned,
                 HexAssignment = HexAssignment != null ? HexAssignment.ToHexAssignment() : null
             };
         }
@@ -52,9 +52,9 @@ namespace Procrastinator.Models
                 Description = quest.Description,
                 UserId = quest.UserId,
                 EstimatedTime = quest.EstimatedTime,
-                Priority = quest.Priority,
-                IsDone = quest.IsDone,
-                IsAssigned = quest.IsAssigned,
+                //Priority = quest.Priority,
+                //IsDone = quest.IsDone,
+                //IsAssigned = quest.IsAssigned,
                 HexAssignment = quest.HexAssignment != null ? HexAssignmentDTO.ToHexAssignmentDTO(quest.HexAssignment) : null
             };
 

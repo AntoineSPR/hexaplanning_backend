@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Procrastinator.Context;
 using Procrastinator.Models;
 
@@ -18,7 +18,7 @@ namespace Procrastinator.Services
         {
             var pending_quests = await context.Quests
                 .Where(x => x.UserId == userId)
-                .Where(q => q.IsDone == false)
+                //.Where(q => q.IsDone == false)
                 .ToListAsync();
             return pending_quests.Select(QuestDTO.ToQuestDTO).ToList();
         }
@@ -26,7 +26,7 @@ namespace Procrastinator.Services
         {
             var completed_quests = await context.Quests
                 .Where(x => x.UserId == userId)
-                .Where(q => q.IsDone == true)
+                //.Where(q => q.IsDone == true)
                 .ToListAsync();
             return completed_quests.Select(QuestDTO.ToQuestDTO).ToList();
         }
@@ -35,7 +35,7 @@ namespace Procrastinator.Services
         {
             var unassigned_pending_quests = await context.Quests
                 .Where(x => x.UserId == userId)
-                .Where(q => q.IsAssigned == false && q.IsDone == false)
+                //.Where(q => q.IsAssigned == false && q.IsDone == false)
                 .ToListAsync();
             return unassigned_pending_quests.Select(QuestDTO.ToQuestDTO).ToList();
 
@@ -66,9 +66,9 @@ namespace Procrastinator.Services
             quest.Title = updatedQuest.Title;
             quest.Description = updatedQuest.Description;
             quest.EstimatedTime = updatedQuest.EstimatedTime;
-            quest.Priority = updatedQuest.Priority;
-            quest.IsDone = updatedQuest.IsDone;
-            quest.IsAssigned = updatedQuest.IsAssigned;
+            //quest.Priority = updatedQuest.Priority;
+            //quest.IsDone = updatedQuest.IsDone;
+            //quest.IsAssigned = updatedQuest.IsAssigned;
             await context.SaveChangesAsync();
             return QuestDTO.ToQuestDTO(quest);
         }
