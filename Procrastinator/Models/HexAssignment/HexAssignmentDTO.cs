@@ -15,7 +15,7 @@ namespace Procrastinator.Models
             {
                 Id = Id,
                 QuestId = QuestId,
-                UserId = UserId,
+                //UserId = UserId,
                 Q = Q,
                 R = R,
                 S = S,
@@ -28,7 +28,7 @@ namespace Procrastinator.Models
             {
                 Id = hexAssignment.Id,
                 QuestId = hexAssignment.QuestId,
-                UserId = hexAssignment.UserId,
+                //UserId = hexAssignment.UserId,
                 Q = hexAssignment.Q,
                 R = hexAssignment.R,
                 S = hexAssignment.S,

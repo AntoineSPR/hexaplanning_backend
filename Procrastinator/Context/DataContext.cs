@@ -34,9 +34,9 @@ namespace Procrastinator.Context
                 .HasForeignKey<HexAssignment>(h => h.QuestId);
 
             // Il ne peut y avoir qu'un seul hexAssignment correspondant à chaque jeu de coordonnées, par utilisateur :
-            builder.Entity<HexAssignment>()
-                .HasIndex(h => new { h.Q, h.R, h.S, h.UserId })
-                .IsUnique();
+            //builder.Entity<HexAssignment>()
+            //    .HasIndex(h => new { h.Q, h.R, h.S, h.UserId })
+            //    .IsUnique();
 
             var roles = new List<Role>()
             {

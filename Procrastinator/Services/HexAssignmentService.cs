@@ -44,7 +44,7 @@ namespace Procrastinator.Services
 
         public async Task<HexAssignmentDTO?> UpdateHexAssignmentAsync(Guid id, HexAssignmentDTO updatedHexAssignment, Guid userId)
         {
-            var hexAssignment = await context.HexAssignments.FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
+            var hexAssignment = await context.HexAssignments.FirstOrDefaultAsync(x => x.Id == id ); //&& x.UserId == userId
             if (hexAssignment == null)
             {
                 return null;
@@ -59,7 +59,7 @@ namespace Procrastinator.Services
 
         public async Task<bool> DeleteHexAssignmentAsync(int q, int r, int s, Guid userId)
         {
-            var hexAssignment = await context.HexAssignments.FirstOrDefaultAsync(h => h.Q == q && h.R == r && h.S == s && h.UserId == userId);
+            var hexAssignment = await context.HexAssignments.FirstOrDefaultAsync(h => h.Q == q && h.R == r && h.S == s ); //&& h.UserId == userId
             if (hexAssignment == null)
             {
                 return false;
