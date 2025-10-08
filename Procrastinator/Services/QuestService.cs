@@ -56,19 +56,18 @@ namespace Procrastinator.Services
             return QuestDTO.ToQuestDTO(quest);
         }
 
-        public async Task<QuestDTO?> UpdateQuestAsync(Guid id, QuestCreateDTO updatedQuest, Guid userId)
+        public async Task<QuestDTO?> UpdateQuestAsync(Guid id, QuestUpdateDTO updatedQuest, Guid userId)
         {
             var quest = await context.Quests.FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
             if (quest == null)
             {
                 return null;
             }
-            quest.Title = updatedQuest.Title;
-            quest.Description = updatedQuest.Description;
-            quest.EstimatedTime = updatedQuest.EstimatedTime;
-            quest.PriorityId = updatedQuest.PriorityId;
-            quest.StatusId = updatedQuest.StatusId;
+
+            updatedQuest.UpdateQuest(quest); // Update the existing quest with new values referenced by 'quest'
+
             await context.SaveChangesAsync();
+
             return QuestDTO.ToQuestDTO(quest);
         }
 

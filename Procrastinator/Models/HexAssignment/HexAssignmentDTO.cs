@@ -15,20 +15,19 @@ namespace Procrastinator.Models
             {
                 Id = Id,
                 QuestId = QuestId,
-                //UserId = UserId,
                 Q = Q,
                 R = R,
                 S = S,
             };
         }
 
-        public static HexAssignmentDTO ToHexAssignmentDTO(HexAssignment hexAssignment)
+        public static HexAssignmentDTO 
+            ToHexAssignmentDTO(HexAssignment hexAssignment)
         {
             return new HexAssignmentDTO
             {
                 Id = hexAssignment.Id,
                 QuestId = hexAssignment.QuestId,
-                //UserId = hexAssignment.UserId,
                 Q = hexAssignment.Q,
                 R = hexAssignment.R,
                 S = hexAssignment.S,

@@ -98,7 +98,7 @@ namespace Procrastinator.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateQuest(Guid id, [FromBody] QuestDTO updatedQuest)
+        public async Task<IActionResult> UpdateQuest(Guid id, [FromBody] QuestUpdateDTO updatedQuest)
         {
             if (HttpContext.Items["UserId"] is Guid userId)
             {

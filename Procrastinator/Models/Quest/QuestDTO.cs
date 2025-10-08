@@ -18,12 +18,8 @@ namespace Procrastinator.Models
 
         public int EstimatedTime { get; set; }
 
-        [EnumDataType(typeof(QuestPriority))]
-        public QuestPriority Priority { get; set; }
-
-        public bool IsDone { get; set; }
-
-        public bool IsAssigned { get; set; }
+        public Guid PriorityId { get; set; }
+        public Guid StatusId { get; set; }
 
         public Guid? HexAssignmentId => HexAssignment?.Id;
         public HexAssignmentDTO? HexAssignment { get; set; }
@@ -36,9 +32,8 @@ namespace Procrastinator.Models
                 Description = Description,
                 UserId = UserId,
                 EstimatedTime = EstimatedTime,
-                //Priority = Priority,
-                //IsDone = IsDone,
-                //IsAssigned = IsAssigned,
+                PriorityId = PriorityId,
+                StatusId = StatusId,
                 HexAssignment = HexAssignment != null ? HexAssignment.ToHexAssignment() : null
             };
         }
