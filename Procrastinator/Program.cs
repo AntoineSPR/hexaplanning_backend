@@ -58,6 +58,8 @@ public partial class Program
         services.AddScoped<QuestService>();
         services.AddScoped<HexAssignmentService>();
         services.AddScoped<FixturesService>();
+        services.AddScoped<StatusService>();
+        services.AddScoped<PriorityService>();
 
         // Logger
         services.AddLogging(loggingBuilder =>
