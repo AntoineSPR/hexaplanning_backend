@@ -4,7 +4,7 @@ namespace Procrastinator.Models
     {
         public Guid Id { get; set; }
         public Guid QuestId { get; set; }
-        public Guid UserId { get; set; }
+        public Guid? UserId { get; set; }
         public int Q { get; set; }
         public int R { get; set; }
         public int S { get; set; }
@@ -17,12 +17,12 @@ namespace Procrastinator.Models
                 QuestId = QuestId,
                 Q = Q,
                 R = R,
-                S = S,
+                S = S,                
             };
         }
 
         public static HexAssignmentDTO 
-            ToHexAssignmentDTO(HexAssignment hexAssignment)
+            ToHexAssignmentDTO(HexAssignment hexAssignment, Guid? userId = null)
         {
             return new HexAssignmentDTO
             {
@@ -31,6 +31,7 @@ namespace Procrastinator.Models
                 Q = hexAssignment.Q,
                 R = hexAssignment.R,
                 S = hexAssignment.S,
+                UserId = userId
             };
         }
     }

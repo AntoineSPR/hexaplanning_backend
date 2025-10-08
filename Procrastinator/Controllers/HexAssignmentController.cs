@@ -83,7 +83,8 @@ namespace Procrastinator.Controllers
                 try
                 {
                     var createdHexAssignment = await hexAssignmentService.CreateHexAssignmentAsync(hexAssignmentDto, userId);
-                    return CreatedAtAction(nameof(GetHexAssignmentById), new { id = createdHexAssignment.Id }, createdHexAssignment);
+                    //return CreatedAtAction(nameof(GetHexAssignmentById), new { id = createdHexAssignment.Id }, createdHexAssignment);
+                    return Ok(createdHexAssignment);
                 }
                 catch (DbUpdateException ex) when (ex.InnerException is PostgresException pgEx && pgEx.SqlState == "23505")
                 {

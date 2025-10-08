@@ -11,7 +11,7 @@ namespace Procrastinator.Services
         public async Task<List<HexAssignmentDTO>> GetAllHexAssignmentsAsync(Guid userId)
         {
             var hexAssignments = await context.HexAssignments.Include(x => x.Quest).Where(x => x.Quest.UserId == userId).ToListAsync();
-            return hexAssignments.Select(HexAssignmentDTO.ToHexAssignmentDTO).ToList();
+            return hexAssignments.Select(h => HexAssignmentDTO.ToHexAssignmentDTO(h)).ToList();
         }
 
         public async Task<HexAssignmentDTO?> GetHexAssignmentByIdAsync(Guid id, Guid userId)
@@ -39,7 +39,7 @@ namespace Procrastinator.Services
             var hexAssignment = hexAssignmentDto.ToHexAssignment();
             context.HexAssignments.Add(hexAssignment);
             await context.SaveChangesAsync();
-            return HexAssignmentDTO.ToHexAssignmentDTO(hexAssignment);
+            return HexAssignmentDTO.ToHexAssignmentDTO(hexAssignment, hexAssignmentDto.UserId);
         }
 
         public async Task<HexAssignmentDTO?> UpdateHexAssignmentAsync(Guid id, HexAssignmentDTO updatedHexAssignment, Guid userId)
