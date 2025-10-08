@@ -88,18 +88,21 @@ namespace Procrastinator.Context
                     Id = HardCode.PRIORITY_PRIMARY_ID,
                     Name = "Quête principale",
                     Color = "#FFA500",
+                    Icon = "primary",
                 },
                 new Priority()
                 {
                     Id = HardCode.PRIORITY_SECONDARY_ID,
                     Name = "Quête secondaire",
                     Color = "#FBA500",
+                    Icon = "secondary",
                 },
                 new Priority()
                 {
                     Id = HardCode.PRIORITY_TERTIARY_ID,
                     Name = "Quête tertiaire",
                     Color = "#FFF500",
+                    Icon = "tertiary",
                 },
             };
             builder.Entity<Priority>().HasData(pri);

@@ -47,9 +47,8 @@ namespace Procrastinator.Models
                 Description = quest.Description,
                 UserId = quest.UserId,
                 EstimatedTime = quest.EstimatedTime,
-                //Priority = quest.Priority,
-                //IsDone = quest.IsDone,
-                //IsAssigned = quest.IsAssigned,
+                StatusId = quest.StatusId,
+                PriorityId = quest.PriorityId,
                 HexAssignment = quest.HexAssignment != null ? HexAssignmentDTO.ToHexAssignmentDTO(quest.HexAssignment) : null
             };
 
