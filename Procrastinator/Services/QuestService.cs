@@ -34,10 +34,12 @@ namespace Procrastinator.Services
         public async Task<List<QuestDTO>> GetAllUnassignedPendingQuestsAsync(Guid userId)
         {
             var unassigned_pending_quests = await context
-                .Quests.Where(x =>
+                .Quests
+                .Include(q => q.HexAssignment)
+                .Where(x =>
                     x.UserId == userId
                     && x.StatusId != HardCode.STATUS_COMPLETED_ID
-                    && x.HexAssignmentId == null
+                    && x.HexAssignment == null
                 )
                 .ToListAsync();
             return unassigned_pending_quests.Select(QuestDTO.ToQuestDTO).ToList();
