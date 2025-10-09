@@ -89,6 +89,7 @@ namespace Procrastinator.Context
                     Name = "Quête principale",
                     Color = "#FFA500",
                     Icon = "primary",
+                    BorderColor = "#E28A2B"
                 },
                 new Priority()
                 {
@@ -96,6 +97,7 @@ namespace Procrastinator.Context
                     Name = "Quête secondaire",
                     Color = "#FBA500",
                     Icon = "secondary",
+                    BorderColor = "#D3D3D3"
                 },
                 new Priority()
                 {

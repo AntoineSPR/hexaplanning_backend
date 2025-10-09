@@ -7,6 +7,7 @@ namespace Procrastinator.Models
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Color { get; set; }
+        public string? BorderColor { get; set; }
         public string? Icon { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -19,6 +20,7 @@ namespace Procrastinator.Models
                 Id = priority.Id,
                 Name = priority.Name,
                 Color = priority.Color,
+                BorderColor = priority.BorderColor,
                 Icon = priority.Icon,
                 CreatedAt = priority.CreatedAt,
                 UpdatedAt = priority.UpdatedAt,
