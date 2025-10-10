@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Procrastinator.Context;
@@ -11,9 +12,11 @@ using Procrastinator.Context;
 namespace Procrastinator.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20251003174015_remove-useless-relations")]
+    partial class removeuselessrelations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -155,14 +158,14 @@ namespace Procrastinator.Migrations
                         new
                         {
                             Id = new Guid("63a2a3ac-442e-4e4c-ad91-1443122b5a6a"),
-                            ConcurrencyStamp = "0291b5f3-2e56-49c5-9ec4-0dd63a771292",
+                            ConcurrencyStamp = "4b976125-3e77-490a-bfa2-d5b3746eba00",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = new Guid("12ccaa16-0d50-491e-8157-ec1b133cf120"),
-                            ConcurrencyStamp = "61b47fee-8ba2-4d27-911e-3a214c92680f",
+                            ConcurrencyStamp = "d1579744-e9b5-44d2-87e7-07952b000093",
                             Name = "Client",
                             NormalizedName = "CLIENT"
                         });
@@ -209,9 +212,6 @@ namespace Procrastinator.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("BorderColor")
-                        .HasColumnType("text");
-
                     b.Property<string>("Color")
                         .IsRequired()
                         .HasColumnType("text");
@@ -235,38 +235,6 @@ namespace Procrastinator.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Priorities");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("6662dfc1-9c40-4d78-806f-34cd22e07023"),
-                            Color = "#FFA500",
-                            CreatedAt = new DateTime(2025, 10, 9, 19, 3, 22, 865, DateTimeKind.Utc).AddTicks(5809),
-                            Icon = "primary",
-                            IsArchived = false,
-                            Name = "Quête principale",
-                            UpdatedAt = new DateTime(2025, 10, 9, 19, 3, 22, 865, DateTimeKind.Utc).AddTicks(5809)
-                        },
-                        new
-                        {
-                            Id = new Guid("2281c955-b3e1-49dc-be62-6a7912bb46b3"),
-                            Color = "#FBA500",
-                            CreatedAt = new DateTime(2025, 10, 9, 19, 3, 22, 865, DateTimeKind.Utc).AddTicks(5813),
-                            Icon = "secondary",
-                            IsArchived = false,
-                            Name = "Quête secondaire",
-                            UpdatedAt = new DateTime(2025, 10, 9, 19, 3, 22, 865, DateTimeKind.Utc).AddTicks(5814)
-                        },
-                        new
-                        {
-                            Id = new Guid("17c07323-d5b4-4568-b773-de3487ff30b1"),
-                            Color = "#FFF500",
-                            CreatedAt = new DateTime(2025, 10, 9, 19, 3, 22, 865, DateTimeKind.Utc).AddTicks(5859),
-                            Icon = "tertiary",
-                            IsArchived = false,
-                            Name = "Quête tertiaire",
-                            UpdatedAt = new DateTime(2025, 10, 9, 19, 3, 22, 865, DateTimeKind.Utc).AddTicks(5859)
-                        });
                 });
 
             modelBuilder.Entity("Procrastinator.Models.Quest", b =>
@@ -351,35 +319,6 @@ namespace Procrastinator.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Statuses");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("17c07323-d5b4-4568-b773-de3487ff30b1"),
-                            Color = "#FFA500",
-                            CreatedAt = new DateTime(2025, 10, 9, 19, 3, 22, 865, DateTimeKind.Utc).AddTicks(5741),
-                            IsArchived = false,
-                            Name = "En attente",
-                            UpdatedAt = new DateTime(2025, 10, 9, 19, 3, 22, 865, DateTimeKind.Utc).AddTicks(5744)
-                        },
-                        new
-                        {
-                            Id = new Guid("2281c955-b3e1-49dc-be62-6a7912bb46b3"),
-                            Color = "#FBA500",
-                            CreatedAt = new DateTime(2025, 10, 9, 19, 3, 22, 865, DateTimeKind.Utc).AddTicks(5764),
-                            IsArchived = false,
-                            Name = "En cours",
-                            UpdatedAt = new DateTime(2025, 10, 9, 19, 3, 22, 865, DateTimeKind.Utc).AddTicks(5764)
-                        },
-                        new
-                        {
-                            Id = new Guid("6662dfc1-9c40-4d78-806f-34cd22e07023"),
-                            Color = "#FFF500",
-                            CreatedAt = new DateTime(2025, 10, 9, 19, 3, 22, 865, DateTimeKind.Utc).AddTicks(5767),
-                            IsArchived = false,
-                            Name = "Terminée",
-                            UpdatedAt = new DateTime(2025, 10, 9, 19, 3, 22, 865, DateTimeKind.Utc).AddTicks(5767)
-                        });
                 });
 
             modelBuilder.Entity("Procrastinator.Models.UserApp", b =>

@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Procrastinator.Context;
 using Procrastinator.Models;
 
@@ -11,10 +11,10 @@ namespace Procrastinator.Services
         public async Task<List<HexAssignmentDTO>> GetAllHexAssignmentsAsync(Guid userId)
         {
             var hexAssignments = await context.HexAssignments.Include(x => x.Quest).Where(x => x.Quest.UserId == userId).ToListAsync();
-            return hexAssignments.Select(HexAssignmentDTO.ToHexAssignmentDTO).ToList();
+            return hexAssignments.Select(h => HexAssignmentDTO.ToHexAssignmentDTO(h)).ToList();
         }
 
-        public async Task<HexAssignmentDTO?> GetHexAssignmentByIdAsync(int id, Guid userId)
+        public async Task<HexAssignmentDTO?> GetHexAssignmentByIdAsync(Guid id, Guid userId)
         {
             var hexAssignment = await context.HexAssignments.Include(x => x.Quest).FirstOrDefaultAsync(x => x.Quest.UserId == userId && x.Id == id);
             return hexAssignment == null ? null : HexAssignmentDTO.ToHexAssignmentDTO(hexAssignment);
@@ -39,12 +39,12 @@ namespace Procrastinator.Services
             var hexAssignment = hexAssignmentDto.ToHexAssignment();
             context.HexAssignments.Add(hexAssignment);
             await context.SaveChangesAsync();
-            return HexAssignmentDTO.ToHexAssignmentDTO(hexAssignment);
+            return HexAssignmentDTO.ToHexAssignmentDTO(hexAssignment, hexAssignmentDto.UserId);
         }
 
-        public async Task<HexAssignmentDTO?> UpdateHexAssignmentAsync(int id, HexAssignmentDTO updatedHexAssignment, Guid userId)
+        public async Task<HexAssignmentDTO?> UpdateHexAssignmentAsync(Guid id, HexAssignmentDTO updatedHexAssignment, Guid userId)
         {
-            var hexAssignment = await context.HexAssignments.FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
+            var hexAssignment = await context.HexAssignments.FirstOrDefaultAsync(x => x.Id == id ); //&& x.UserId == userId
             if (hexAssignment == null)
             {
                 return null;
@@ -59,7 +59,7 @@ namespace Procrastinator.Services
 
         public async Task<bool> DeleteHexAssignmentAsync(int q, int r, int s, Guid userId)
         {
-            var hexAssignment = await context.HexAssignments.FirstOrDefaultAsync(h => h.Q == q && h.R == r && h.S == s && h.UserId == userId);
+            var hexAssignment = await context.HexAssignments.FirstOrDefaultAsync(h => h.Q == q && h.R == r && h.S == s ); //&& h.UserId == userId
             if (hexAssignment == null)
             {
                 return false;

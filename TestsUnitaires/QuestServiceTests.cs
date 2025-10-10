@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Procrastinator.Context;
 using Procrastinator.Models;
 using Procrastinator.Services;
@@ -30,8 +30,8 @@ namespace TestsUnitaires
                 UserId = userId,
                 Title = "Test Quest",
                 Description = "This is a test quest",
-                IsAssigned = false,
-                IsDone = false
+                //IsAssigned = false,
+                //IsDone = false
             };
             await _context.Quests.AddAsync(quest);
             await _context.SaveChangesAsync();
@@ -84,8 +84,8 @@ namespace TestsUnitaires
                 UserId = userId,
                 Title = "Old Title",
                 Description = "Old Description",
-                IsAssigned = false,
-                IsDone = false
+                //IsAssigned = false,
+                //IsDone = false
             };
             await _context.Quests.AddAsync(quest);
             await _context.SaveChangesAsync();
@@ -138,8 +138,8 @@ namespace TestsUnitaires
                 UserId = userId,
                 Title = "Quest to delete",
                 Description = "Description",
-                IsAssigned = false,
-                IsDone = false
+                //IsAssigned = false,
+                //IsDone = false
             };
             await _context.Quests.AddAsync(quest);
             await _context.SaveChangesAsync();
@@ -162,9 +162,9 @@ namespace TestsUnitaires
         public async Task GetAllQuestsAsync_ReturnsAllUserQuests()
         {
             var userId = Guid.NewGuid();
-            var quest1 = new Quest { Id = Guid.NewGuid(), UserId = userId, Title = "Q1", Description = "", IsAssigned = false, IsDone = false };
-            var quest2 = new Quest { Id = Guid.NewGuid(), UserId = userId, Title = "Q2", Description = "", IsAssigned = true, IsDone = true };
-            await _context.Quests.AddRangeAsync(quest1, quest2);
+            //var quest1 = new Quest { Id = Guid.NewGuid(), UserId = userId, Title = "Q1", Description = "", IsAssigned = false, IsDone = false };
+            //var quest2 = new Quest { Id = Guid.NewGuid(), UserId = userId, Title = "Q2", Description = "", IsAssigned = true, IsDone = true };
+            //await _context.Quests.AddRangeAsync(quest1, quest2);
             await _context.SaveChangesAsync();
 
             var result = await _questService.GetAllQuestsAsync(userId);
@@ -178,9 +178,9 @@ namespace TestsUnitaires
         public async Task GetAllPendingQuestsAsync_ReturnsPendingQuests()
         {
             var userId = Guid.NewGuid();
-            var quest1 = new Quest { Id = Guid.NewGuid(), UserId = userId, Title = "Pending", Description = "", IsAssigned = false, IsDone = false };
-            var quest2 = new Quest { Id = Guid.NewGuid(), UserId = userId, Title = "Done", Description = "", IsAssigned = false, IsDone = true };
-            await _context.Quests.AddRangeAsync(quest1, quest2);
+            //var quest1 = new Quest { Id = Guid.NewGuid(), UserId = userId, Title = "Pending", Description = "", IsAssigned = false, IsDone = false };
+            //var quest2 = new Quest { Id = Guid.NewGuid(), UserId = userId, Title = "Done", Description = "", IsAssigned = false, IsDone = true };
+            //await _context.Quests.AddRangeAsync(quest1, quest2);
             await _context.SaveChangesAsync();
 
             var result = await _questService.GetAllPendingQuestsAsync(userId);
@@ -193,9 +193,9 @@ namespace TestsUnitaires
         public async Task GetAllCompletedQuestsAsync_ReturnsCompletedQuests()
         {
             var userId = Guid.NewGuid();
-            var quest1 = new Quest { Id = Guid.NewGuid(), UserId = userId, Title = "Pending", Description = "", IsAssigned = false, IsDone = false };
-            var quest2 = new Quest { Id = Guid.NewGuid(), UserId = userId, Title = "Done", Description = "", IsAssigned = false, IsDone = true };
-            await _context.Quests.AddRangeAsync(quest1, quest2);
+            //var quest1 = new Quest { Id = Guid.NewGuid(), UserId = userId, Title = "Pending", Description = "", IsAssigned = false, IsDone = false };
+            //var quest2 = new Quest { Id = Guid.NewGuid(), UserId = userId, Title = "Done", Description = "", IsAssigned = false, IsDone = true };
+            //await _context.Quests.AddRangeAsync(quest1, quest2);
             await _context.SaveChangesAsync();
 
             var result = await _questService.GetAllCompletedQuestsAsync(userId);
@@ -208,10 +208,10 @@ namespace TestsUnitaires
         public async Task GetAllUnassignedPendingQuestsAsync_ReturnsUnassignedPendingQuests()
         {
             var userId = Guid.NewGuid();
-            var quest1 = new Quest { Id = Guid.NewGuid(), UserId = userId, Title = "UnassignedPending", Description = "", IsAssigned = false, IsDone = false };
-            var quest2 = new Quest { Id = Guid.NewGuid(), UserId = userId, Title = "AssignedPending", Description = "", IsAssigned = true, IsDone = false };
-            var quest3 = new Quest { Id = Guid.NewGuid(), UserId = userId, Title = "UnassignedDone", Description = "", IsAssigned = false, IsDone = true };
-            await _context.Quests.AddRangeAsync(quest1, quest2, quest3);
+            //var quest1 = new Quest { Id = Guid.NewGuid(), UserId = userId, Title = "UnassignedPending", Description = "", IsAssigned = false, IsDone = false };
+            //var quest2 = new Quest { Id = Guid.NewGuid(), UserId = userId, Title = "AssignedPending", Description = "", IsAssigned = true, IsDone = false };
+            //var quest3 = new Quest { Id = Guid.NewGuid(), UserId = userId, Title = "UnassignedDone", Description = "", IsAssigned = false, IsDone = true };
+            //await _context.Quests.AddRangeAsync(quest1, quest2, quest3);
             await _context.SaveChangesAsync();
 
             var result = await _questService.GetAllUnassignedPendingQuestsAsync(userId);

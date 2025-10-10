@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
 namespace Procrastinator.Models
@@ -18,14 +18,11 @@ namespace Procrastinator.Models
 
         public int EstimatedTime { get; set; }
 
-        [EnumDataType(typeof(QuestPriority))]
-        public QuestPriority Priority { get; set; }
+        public Guid PriorityId { get; set; }
+        public Guid StatusId { get; set; }
+        public int? Advancement { get; set; }
 
-        public bool IsDone { get; set; }
-
-        public bool IsAssigned { get; set; }
-
-        public int? HexAssignmentId => HexAssignment?.Id;
+        public Guid? HexAssignmentId => HexAssignment?.Id;
         public HexAssignmentDTO? HexAssignment { get; set; }
 
         public Quest ToQuest()
@@ -36,10 +33,10 @@ namespace Procrastinator.Models
                 Description = Description,
                 UserId = UserId,
                 EstimatedTime = EstimatedTime,
-                Priority = Priority,
-                IsDone = IsDone,
-                IsAssigned = IsAssigned,
-                HexAssignment = HexAssignment != null ? HexAssignment.ToHexAssignment() : null
+                PriorityId = PriorityId,
+                StatusId = StatusId,
+                HexAssignment = HexAssignment != null ? HexAssignment.ToHexAssignment() : null,
+                Advancement = Advancement
             };
         }
 
@@ -52,9 +49,10 @@ namespace Procrastinator.Models
                 Description = quest.Description,
                 UserId = quest.UserId,
                 EstimatedTime = quest.EstimatedTime,
-                Priority = quest.Priority,
-                IsDone = quest.IsDone,
-                IsAssigned = quest.IsAssigned,
+                StatusId = quest.StatusId,
+                PriorityId = quest.PriorityId,
+                Advancement = quest.Advancement,
+
                 HexAssignment = quest.HexAssignment != null ? HexAssignmentDTO.ToHexAssignmentDTO(quest.HexAssignment) : null
             };
 

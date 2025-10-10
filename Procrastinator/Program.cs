@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +14,7 @@ using Procrastinator.Utilities;
 // Make the Program class accessible for integration tests
 public partial class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
         builder.Logging.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
@@ -28,7 +29,20 @@ public partial class Program
             using (var scope = app.Services.CreateScope())
             {
                 var dataContext = scope.ServiceProvider.GetRequiredService<DataContext>();
+                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<UserApp>>(); 
+
                 dataContext.Database.Migrate();
+                //dataContext.Database.EnsureCreated();
+
+                var user = new UserApp
+                {
+                    FirstName = "antoine",
+                    LastName = "Simper",
+                    UserName = "antoine.simper@gmail.com",
+                    Email = "antoine.simper@gmail.com"
+                };
+
+                await userManager.CreateAsync(user, "mahdiiii");
             }
         }
         
@@ -44,6 +58,8 @@ public partial class Program
         services.AddScoped<QuestService>();
         services.AddScoped<HexAssignmentService>();
         services.AddScoped<FixturesService>();
+        services.AddScoped<StatusService>();
+        services.AddScoped<PriorityService>();
 
         // Logger
         services.AddLogging(loggingBuilder =>

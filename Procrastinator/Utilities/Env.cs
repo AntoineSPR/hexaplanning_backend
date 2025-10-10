@@ -1,4 +1,4 @@
-﻿namespace Procrastinator.Utilities
+namespace Procrastinator.Utilities
 {
     public static class Env
     {
@@ -17,7 +17,7 @@
             return Environment.GetEnvironmentVariable(key) ?? string.Empty;
         }
 
-        public static string CONNECTION_STRING => GetEnv(nameof(CONNECTION_STRING), "Host=localhost;Port=5432;Database=procrastinator;Username=postgres;Password=postgres");
+        public static string CONNECTION_STRING => GetEnv(nameof(CONNECTION_STRING), "Host=localhost;Port=5432;Database=procrastinator;Username=postgres;Password=beecoming");
         public static string API_BACK_URL => GetEnv(nameof(API_BACK_URL), "https://localhost:7168");
         public static string API_FRONT_URL => GetEnv(nameof(API_FRONT_URL), "http://localhost:4200");
         public static string JWT_KEY => GetEnv(nameof(JWT_KEY), "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV31");
