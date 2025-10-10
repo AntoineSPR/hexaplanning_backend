@@ -196,33 +196,6 @@ namespace Procrastinator.Services
             return existingUser != null;
         }
 
-        public async Task<bool> SendPasswordResetEmail(string email)
-        {
-            try
-            {
-                var user = await userManager.FindByEmailAsync(email);
-                if (user == null)
-                {
-                    // Pour des raisons de sécurité, on ne révèle pas si l'email existe
-                    return true;
-                }
-
-                var resetToken = await userManager.GeneratePasswordResetTokenAsync(user);
-
-                var encodedToken = Uri.EscapeDataString(resetToken);
-                var resetLink = $"{Env.API_FRONT_URL}/reset-password?token={encodedToken}&email={Uri.EscapeDataString(email)}";
-
-                // TODO: Remplacer par un service d'email
-                await SendResetEmailAsync(email, resetLink);
-
-                return true;
-            }
-            catch
-            {
-                throw;
-            }
-        }
-
         public async Task<bool> ResetPassword(ResetPasswordDTO model)
         {
             try
@@ -247,19 +220,6 @@ namespace Procrastinator.Services
             {
                 throw;
             }
-        }
-
-        // Méthode temporaire pour l'envoi d'email (à remplacer par un service d'email)
-        private async Task SendResetEmailAsync(string email, string resetLink)
-        {
-            // TODO: service d'email ici
-            // Exemple avec un logger temporaire :
-            Console.WriteLine($"Email de réinitialisation envoyé à {email}");
-            Console.WriteLine($"Lien de réinitialisation : {resetLink}");
-
-            await Task.CompletedTask;
-        }
-
-
+        }               
     }
 }
