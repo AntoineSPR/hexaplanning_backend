@@ -42,15 +42,23 @@ namespace Procrastinator.Services
                 var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
                 var encodedToken = Uri.EscapeDataString(resetToken);
                 var resetLink = $"{Env.API_FRONT_URL}/reset-password?token={encodedToken}&email={Uri.EscapeDataString(emailAddress)}";
+                var firstNameTitleCase = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(user.FirstName.ToLower());
+                var lastNameTitleCase = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(user.LastName.ToLower());
 
                 var mailMessage = new MailMessage
                 {
                     From = new MailAddress("ne-pas-repondre@hexaplanning.fr"),
-                    Subject = "Réinitialisez votre mot de passe Hexaplanning",
+                    Subject = "Hexaplanning : Réinitialisez votre mot de passe",
                     Body = $"""
-                    Suivez ce lien pour réinitialiser votre mot de passe : 
+                    Bonjour {firstNameTitleCase } { lastNameTitleCase },
+
+                    Vous avez demandé un lien pour réinitialiser votre mot de passe. Si la demande ne venait pas de vous, veuillez ignorer ce message.
+                    
+                    Ce lien est valable 24 heures : 
                     
                     { resetLink }
+
+                    Au plaisir de vous revoir sur Hexaplanning !
                     """,
                     IsBodyHtml = false,
                 };
