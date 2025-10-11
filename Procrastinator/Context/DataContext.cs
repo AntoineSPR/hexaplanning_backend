@@ -87,7 +87,7 @@ namespace Procrastinator.Context
                 {
                     Id = HardCode.PRIORITY_PRIMARY_ID,
                     Name = "Quête principale",
-                    Color = "#FFA500",
+                    Color = "#E28A2B",
                     Icon = "primary",
                     BorderColor = "#E28A2B"
                 },
@@ -95,7 +95,7 @@ namespace Procrastinator.Context
                 {
                     Id = HardCode.PRIORITY_SECONDARY_ID,
                     Name = "Quête secondaire",
-                    Color = "#FBA500",
+                    Color = "#8A2BE2",
                     Icon = "secondary",
                     BorderColor = "#D3D3D3"
                 },
@@ -103,7 +103,7 @@ namespace Procrastinator.Context
                 {
                     Id = HardCode.PRIORITY_TERTIARY_ID,
                     Name = "Quête tertiaire",
-                    Color = "#FFF500",
+                    Color = "#797676",
                     Icon = "tertiary",
                 },
             };
