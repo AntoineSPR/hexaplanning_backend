@@ -10,6 +10,7 @@ namespace Procrastinator.Services
     {
         private readonly IWebHostEnvironment _env;
         private readonly UserManager<UserApp> _userManager;
+        private static readonly Dictionary<string, DateTime> _lastResetRequest = new();
 
 
         public SendMailService(IWebHostEnvironment env, UserManager<UserApp> userManager)
@@ -22,6 +23,12 @@ namespace Procrastinator.Services
         {
             try
             {
+                if (_lastResetRequest.TryGetValue(emailAddress, out var lastRequest))
+                {
+                    if (DateTime.UtcNow - lastRequest < TimeSpan.FromMinutes(5)) return true;
+                }
+                _lastResetRequest[emailAddress] = DateTime.UtcNow;
+
                 var smtpClient = new SmtpClient(Env.SMTP_HOST)
                 {
                     Port = Int32.Parse(Env.SMTP_PORT),
@@ -52,7 +59,7 @@ namespace Procrastinator.Services
                     Body = $"""
                     Bonjour {firstNameTitleCase } { lastNameTitleCase },
 
-                    Vous avez demandé un lien pour réinitialiser votre mot de passe. Si la demande ne venait pas de vous, veuillez ignorer ce message.
+                    Vous avez demandé un lien pour réinitialiser votre mot de passe Hexaplanning. Si la demande ne venait pas de vous, veuillez ignorer ce message.
                     
                     Ce lien est valable 24 heures : 
                     
