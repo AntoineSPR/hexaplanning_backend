@@ -37,9 +37,6 @@ namespace Procrastinator.Models
         [ForeignKey(nameof(StatusId))]
         public Status Status { get; set; }
 
-        public Guid? HexAssignmentId { get; set; }
-
-        [ForeignKey(nameof(HexAssignmentId))]
         public HexAssignment? HexAssignment { get; set; }
     }
 }

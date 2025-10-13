@@ -18,7 +18,6 @@ namespace Procrastinator.Models
         public Guid StatusId { get; set; }
         public int? Advancement { get; set; }
 
-        public Guid? HexAssignmentId => HexAssignment?.Id;
         public HexAssignmentDTO? HexAssignment { get; set; }
 
         public void UpdateQuest(Quest existingQuest)

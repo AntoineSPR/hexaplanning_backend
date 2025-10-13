@@ -22,7 +22,6 @@ namespace Procrastinator.Models
         public Guid StatusId { get; set; }
         public int? Advancement { get; set; }
 
-        public Guid? HexAssignmentId => HexAssignment?.Id;
         public HexAssignmentDTO? HexAssignment { get; set; }
 
         public Quest ToQuest()
@@ -52,10 +51,8 @@ namespace Procrastinator.Models
                 StatusId = quest.StatusId,
                 PriorityId = quest.PriorityId,
                 Advancement = quest.Advancement,
-
                 HexAssignment = quest.HexAssignment != null ? HexAssignmentDTO.ToHexAssignmentDTO(quest.HexAssignment) : null
             };
-
         }
         
     }

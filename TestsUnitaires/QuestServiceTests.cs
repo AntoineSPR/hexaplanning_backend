@@ -56,14 +56,13 @@ namespace TestsUnitaires
         public async Task CreateQuestAsync_CreatesQuest()
         {
             var userId = Guid.NewGuid();
-            var questDto = new QuestDTO
+            var questDto = new QuestCreateDTO
             {
                 Title = "New Quest",
                 Description = "Description",
-                UserId = userId,
-                IsAssigned = false,
-                IsDone = false,
-                Priority = QuestPriority.PRIMARY,
+                EstimatedTime = 10,
+                PriorityId = Guid.NewGuid(),
+                StatusId = Guid.NewGuid()
             };
 
             var result = await _questService.CreateQuestAsync(questDto, userId);
@@ -84,44 +83,41 @@ namespace TestsUnitaires
                 UserId = userId,
                 Title = "Old Title",
                 Description = "Old Description",
-                //IsAssigned = false,
-                //IsDone = false
+                EstimatedTime = 5,
+                PriorityId = Guid.NewGuid(),
+                StatusId = Guid.NewGuid()
             };
             await _context.Quests.AddAsync(quest);
             await _context.SaveChangesAsync();
 
-            var updatedDto = new QuestDTO
+            var updatedDto = new QuestUpdateDTO
             {
                 Id = quest.Id,
                 Title = "Updated Title",
                 Description = "Updated Description",
-                UserId = userId,
-                IsAssigned = true,
-                IsDone = true,
-                Priority = QuestPriority.PRIMARY,
+                EstimatedTime = 15,
+                PriorityId = quest.PriorityId,
+                StatusId = quest.StatusId
             };
 
             var result = await _questService.UpdateQuestAsync(quest.Id, updatedDto, userId);
 
             Assert.NotNull(result);
             Assert.Equal("Updated Title", result.Title);
-            Assert.True(result.IsAssigned);
-            Assert.True(result.IsDone);
         }
 
         [Fact]
         public async Task UpdateQuestAsync_WithInvalidId_ReturnsNull()
         {
             var userId = Guid.NewGuid();
-            var updatedDto = new QuestDTO
+            var updatedDto = new QuestUpdateDTO
             {
                 Id = Guid.NewGuid(),
                 Title = "Updated Title",
                 Description = "Updated Description",
-                UserId = userId,
-                IsAssigned = true,
-                IsDone = true,
-                Priority = QuestPriority.PRIMARY,
+                EstimatedTime = 15,
+                PriorityId = Guid.NewGuid(),
+                StatusId = Guid.NewGuid()
             };
 
             var result = await _questService.UpdateQuestAsync(updatedDto.Id.Value, updatedDto, userId);
