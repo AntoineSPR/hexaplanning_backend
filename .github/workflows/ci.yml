@@ -3,7 +3,7 @@ name: CI pipeline for the API
 on:
   push:
     branches:
-      - main
+      - main-1
 
 jobs:
   test-unitaire:
@@ -35,6 +35,6 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore ./Procrastinator/
       - name: Build
-        run: dotnet build ./Procrastinator/ --no-restore 
+        run: dotnet build ./Procrastinator/ --no-restore
       - name: Lancer les tests d'intégration
         run: dotnet test --no-build --verbosity detailed  ./TestsIntegration
