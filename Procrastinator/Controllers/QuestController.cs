@@ -8,6 +8,9 @@ using Procrastinator.Utilities;
 
 namespace Procrastinator.Controllers
 {
+    /// <summary>
+    /// Gestion des quêtes
+    /// </summary>
     [Route("[controller]")]
     [Authorize]
     [ApiController]
@@ -31,6 +34,10 @@ namespace Procrastinator.Controllers
             return Unauthorized();
         }
 
+        /// <summary>
+        /// Ceci est un test
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("pending")]
         public async Task<IActionResult> GetAllPendingQuests()
         {
@@ -79,6 +86,18 @@ namespace Procrastinator.Controllers
             return Unauthorized();
         }
 
+        /// <summary>
+        /// Crée une nouvelle quête pour l'utilisateur authentifié.
+        /// </summary>
+        /// <param name="questDto">Les données de la quête à créer.</param>
+        /// <returns>
+        /// Une réponse HTTP 201 Created contenant la quête créée avec son identifiant unique,
+        /// ainsi qu'un en-tête Location pointant vers l'endpoint de récupération de la quête.
+        /// </returns>
+        /// <response code="201">La quête a été créée avec succès. Retourne la quête avec son ID généré.</response>
+        /// <response code="400">Les données fournies sont invalides (validation échouée).</response>
+        /// <response code="401">L'utilisateur n'est pas authentifié ou le token JWT est invalide.</response>
+        /// <response code="409">Une quête est déjà associée à cet hexagone (contrainte d'unicité violée).</response>
         [HttpPost]
         public async Task<IActionResult> CreateQuest([FromBody] QuestCreateDTO questDto)
         {
