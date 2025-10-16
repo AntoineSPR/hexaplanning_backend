@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestPlatform.TestHost;
 using Procrastinator.Context;
 using Procrastinator.Models;
+using Procrastinator.Utilities;
 using Testcontainers.PostgreSql;
 
 namespace TestsIntegration;
@@ -95,6 +96,7 @@ public class Factory : WebApplicationFactory<Program>, IAsyncLifetime
 
     private async Task SeedDataAsync(UserManager<UserApp> userManager, DataContext dataContext)
     {
+        // Créer l'utilisateur via UserManager
         var user = new UserApp
         {
             FirstName = "Test",
@@ -104,20 +106,32 @@ public class Factory : WebApplicationFactory<Program>, IAsyncLifetime
             EmailConfirmed = true,
         };
 
-        var userResult = await userManager.CreateAsync(user, "testuser123!");
+        var userResult = await userManager.CreateAsync(user, "TestUser123!");
+
+        if (!userResult.Succeeded)
+        {
+            throw new Exception($"Failed to create user: {string.Join(", ", userResult.Errors.Select(e => e.Description))}");
+        }
+
+        // Récupérer l'utilisateur depuis la base pour avoir l'entité trackée par EF Core
+        var createdUser = await dataContext.Users.FirstOrDefaultAsync(u => u.Email == "user@gmail.com");
+        
+        if (createdUser == null)
+        {
+            throw new Exception("User was created but not found in database");
+        }
 
         var quest = new Quest
         {
             Title = "Test Quest",
             Description = "This is a test quest",
-            //IsDone = false,
-            UserId = user.Id,
+            UserId = createdUser.Id,
             EstimatedTime = 30,
-            //Priority = QuestPriority.PRIMARY,
-            //IsAssigned = false
+            PriorityId = HardCode.PRIORITY_TERTIARY_ID,
+            StatusId = HardCode.STATUS_WAITING_ID,
         };
 
-        var questResult = await dataContext.Quests.AddAsync(quest);
+        await dataContext.Quests.AddAsync(quest);
         await dataContext.SaveChangesAsync();
     }
 }
