@@ -3,7 +3,7 @@ name: CI pipeline for the API
 on:
   push:
     branches:
-      - main-1
+      - main
 
 jobs:
   test-unitaire:
