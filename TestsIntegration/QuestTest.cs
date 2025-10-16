@@ -54,10 +54,7 @@ namespace TestsIntegration
             
             var quest = responseArray.First();
             Assert.Equal("Test Quest", quest.Title);
-            Assert.Equal("This is a test quest", quest.Description);
-            //Assert.Equal(QuestPriority.PRIMARY, quest.Priority);
-            //Assert.False(quest.IsDone);
-            //Assert.False(quest.IsAssigned);
+            Assert.Equal("This is a test quest", quest.Description);            
             Assert.Equal(testUser.Id, quest.UserId);
         }
 
