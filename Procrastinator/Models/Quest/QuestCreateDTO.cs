@@ -15,6 +15,7 @@ namespace Procrastinator.Models
 
         public Guid StatusId { get; set; }
         public Guid PriorityId { get; set; }
+        public int? Advancement { get; set; }
 
         public Quest ToQuest(Guid userId)
         {
@@ -25,7 +26,8 @@ namespace Procrastinator.Models
                 UserId = userId,
                 EstimatedTime = EstimatedTime,
                 PriorityId = PriorityId,
-                StatusId = StatusId
+                StatusId = StatusId,
+                Advancement = Advancement
             };
         }
     }
