@@ -9,6 +9,14 @@ namespace Procrastinator.Services
     {
         private readonly DataContext context = context;
 
+        /// <summary>
+        /// Récupère toutes les quêtes d'un utilisateur spécifique.
+        /// </summary>
+        /// <param name="userId">L'identifiant unique (GUID) de l'utilisateur.</param>
+        /// <returns>
+        /// Une liste de <see cref="QuestDTO"/> contenant toutes les quêtes associées à l'utilisateur.
+        /// Retourne une liste vide si l'utilisateur n'a aucune quête.
+        /// </returns
         public async Task<List<QuestDTO>> GetAllQuestsAsync(Guid userId)
         {
             var quests = await context.Quests.Where(x => x.UserId == userId).ToListAsync();
