@@ -1,6 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Procrastinator.Context;
 using Procrastinator.Models;
+using Procrastinator.Utilities;
 
 namespace Procrastinator.Services
 {
@@ -16,70 +17,90 @@ namespace Procrastinator.Services
 
         public async Task<List<QuestDTO>> GetAllPendingQuestsAsync(Guid userId)
         {
-            var pending_quests = await context.Quests
-                .Where(x => x.UserId == userId)
-                .Where(q => q.IsDone == false)
+            var pending_quests = await context
+                .Quests.Where(x => x.UserId == userId && x.StatusId != HardCode.STATUS_COMPLETED_ID)
                 .ToListAsync();
             return pending_quests.Select(QuestDTO.ToQuestDTO).ToList();
         }
+
         public async Task<List<QuestDTO>> GetAllCompletedQuestsAsync(Guid userId)
         {
-            var completed_quests = await context.Quests
-                .Where(x => x.UserId == userId)
-                .Where(q => q.IsDone == true)
+            var completed_quests = await context
+                .Quests.Where(x => x.UserId == userId && x.StatusId == HardCode.STATUS_COMPLETED_ID)
                 .ToListAsync();
             return completed_quests.Select(QuestDTO.ToQuestDTO).ToList();
         }
 
         public async Task<List<QuestDTO>> GetAllUnassignedPendingQuestsAsync(Guid userId)
         {
-            var unassigned_pending_quests = await context.Quests
-                .Where(x => x.UserId == userId)
-                .Where(q => q.IsAssigned == false && q.IsDone == false)
+            var unassigned_pending_quests = await context
+                .Quests
+                .Include(q => q.HexAssignment)
+                .Where(x =>
+                    x.UserId == userId
+                    && x.StatusId != HardCode.STATUS_COMPLETED_ID
+                    && x.HexAssignment == null
+                )
                 .ToListAsync();
             return unassigned_pending_quests.Select(QuestDTO.ToQuestDTO).ToList();
-
         }
 
         public async Task<QuestDTO?> GetQuestByIdAsync(Guid id, Guid userId)
         {
-            var quest = await context.Quests.FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
+            var quest = await context.Quests.FirstOrDefaultAsync(x =>
+                x.Id == id && x.UserId == userId
+            );
             return quest == null ? null : QuestDTO.ToQuestDTO(quest);
         }
 
-        public async Task<QuestDTO> CreateQuestAsync(QuestDTO questDto, Guid userId)
+        public async Task<QuestDTO> CreateQuestAsync(QuestCreateDTO questDto, Guid userId)
         {
-            questDto.UserId = userId;
-            var quest = questDto.ToQuest();
+            var quest = questDto.ToQuest(userId);
             context.Quests.Add(quest);
             await context.SaveChangesAsync();
             return QuestDTO.ToQuestDTO(quest);
         }
 
-        public async Task<QuestDTO?> UpdateQuestAsync(Guid id, QuestDTO updatedQuest, Guid userId)
+        public async Task<QuestDTO?> UpdateQuestAsync(
+            Guid id,
+            QuestUpdateDTO updatedQuest,
+            Guid userId
+        )
         {
-            var quest = await context.Quests.FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
+            var quest = await context.Quests.FirstOrDefaultAsync(x =>
+                x.Id == id && x.UserId == userId
+            );
             if (quest == null)
             {
                 return null;
             }
-            quest.Title = updatedQuest.Title;
-            quest.Description = updatedQuest.Description;
-            quest.EstimatedTime = updatedQuest.EstimatedTime;
-            quest.Priority = updatedQuest.Priority;
-            quest.IsDone = updatedQuest.IsDone;
-            quest.IsAssigned = updatedQuest.IsAssigned;
+
+            updatedQuest.UpdateQuest(quest); // Update the existing quest with new values referenced by 'quest'
+
             await context.SaveChangesAsync();
+
             return QuestDTO.ToQuestDTO(quest);
         }
 
         public async Task<bool> DeleteQuestAsync(Guid id, Guid userId)
         {
-            var quest = await context.Quests.FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
+            var quest = await context.Quests.FirstOrDefaultAsync(x =>
+                x.Id == id && x.UserId == userId
+            );
             if (quest == null)
             {
                 return false;
             }
+
+            var assignment = await context.HexAssignments.FirstOrDefaultAsync(a =>
+                a.QuestId == quest.Id
+            );
+
+            if (assignment is not null)
+            {
+                context.HexAssignments.Remove(assignment);
+            }
+
             context.Quests.Remove(quest);
             await context.SaveChangesAsync();
             return true;

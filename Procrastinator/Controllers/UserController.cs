@@ -14,14 +14,17 @@ namespace Procrastinator.Controllers
 
         private readonly AuthService authService;
         private readonly UserService userService;
+        private readonly SendMailService mailService;
 
         public UserController(
             AuthService authService,
-            UserService userService
+            UserService userService,
+            SendMailService mailService
         )
         {
             this.authService = authService;
             this.userService = userService;
+            this.mailService = mailService;
         }
 
         [AllowAnonymous]
@@ -127,9 +130,9 @@ namespace Procrastinator.Controllers
 
         [AllowAnonymous]
         [EnableCors]
-        [Route("forgot-password")]
+        [Route("forgot-password/{email}")]
         [HttpPost]
-        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDTO model)
+        public async Task<IActionResult> ForgotPassword([FromRoute] string email)
         {
             try
             {
@@ -138,7 +141,7 @@ namespace Procrastinator.Controllers
                     return BadRequest(ModelState);
                 }
 
-                await authService.SendPasswordResetEmail(model.Email);
+                await mailService.SendPasswordResetEmail(email);
 
                 return Ok(new { message = "Si votre email existe, un lien de réinitialisation a été envoyé." });
             }
@@ -170,5 +173,28 @@ namespace Procrastinator.Controllers
                 return BadRequest(new { message = e.Message });
             }
         }
+
+        //[AllowAnonymous]
+        //[EnableCors]
+        //[Route("send-mail")]
+        //[HttpPost]
+        //public async Task<IActionResult> SendMail([FromBody] Mail mail)
+        //{
+        //    try
+        //    {
+        //        if (!ModelState.IsValid)
+        //        {
+        //            return BadRequest(ModelState);
+        //        }
+
+        //        await mailService.SendEmail(mail);
+
+        //        return Ok(new { message = "Email envoyé." });
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return BadRequest(new { message = e.Message });
+        //    }
+        //}
     }
 }

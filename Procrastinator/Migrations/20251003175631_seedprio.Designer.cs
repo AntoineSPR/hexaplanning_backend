@@ -12,8 +12,8 @@ using Procrastinator.Context;
 namespace Procrastinator.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250813122958_Initial_DB")]
-    partial class Initial_DB
+    [Migration("20251003175631_seedprio")]
+    partial class seedprio
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -158,14 +158,14 @@ namespace Procrastinator.Migrations
                         new
                         {
                             Id = new Guid("63a2a3ac-442e-4e4c-ad91-1443122b5a6a"),
-                            ConcurrencyStamp = "6ab6a86c-1be8-4ecc-9436-f61946f58552",
+                            ConcurrencyStamp = "33cff182-23da-4779-8d1e-fd9b6939b324",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = new Guid("12ccaa16-0d50-491e-8157-ec1b133cf120"),
-                            ConcurrencyStamp = "49b0d474-5c69-45d6-963e-9bf140fe4b0f",
+                            ConcurrencyStamp = "42c9926e-ced4-462a-a18b-47e9646282c5",
                             Name = "Client",
                             NormalizedName = "CLIENT"
                         });
@@ -173,11 +173,15 @@ namespace Procrastinator.Migrations
 
             modelBuilder.Entity("Procrastinator.Models.HexAssignment", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("uuid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsArchived")
+                        .HasColumnType("boolean");
 
                     b.Property<int>("Q")
                         .HasColumnType("integer");
@@ -191,20 +195,75 @@ namespace Procrastinator.Migrations
                     b.Property<int>("S")
                         .HasColumnType("integer");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
                     b.HasIndex("QuestId")
                         .IsUnique();
 
-                    b.HasIndex("UserId");
-
-                    b.HasIndex("Q", "R", "S", "UserId")
-                        .IsUnique();
-
                     b.ToTable("HexAssignments");
+                });
+
+            modelBuilder.Entity("Procrastinator.Models.Priority", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Icon")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsArchived")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Priorities");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("6662dfc1-9c40-4d78-806f-34cd22e07023"),
+                            Color = "#FFA500",
+                            CreatedAt = new DateTime(2025, 10, 3, 17, 56, 31, 321, DateTimeKind.Utc).AddTicks(8825),
+                            IsArchived = false,
+                            Name = "Quête principale",
+                            UpdatedAt = new DateTime(2025, 10, 3, 17, 56, 31, 321, DateTimeKind.Utc).AddTicks(8825)
+                        },
+                        new
+                        {
+                            Id = new Guid("2281c955-b3e1-49dc-be62-6a7912bb46b3"),
+                            Color = "#FBA500",
+                            CreatedAt = new DateTime(2025, 10, 3, 17, 56, 31, 321, DateTimeKind.Utc).AddTicks(8830),
+                            IsArchived = false,
+                            Name = "Quête secondaire",
+                            UpdatedAt = new DateTime(2025, 10, 3, 17, 56, 31, 321, DateTimeKind.Utc).AddTicks(8830)
+                        },
+                        new
+                        {
+                            Id = new Guid("17c07323-d5b4-4568-b773-de3487ff30b1"),
+                            Color = "#FFF500",
+                            CreatedAt = new DateTime(2025, 10, 3, 17, 56, 31, 321, DateTimeKind.Utc).AddTicks(8832),
+                            IsArchived = false,
+                            Name = "Quête tertiaire",
+                            UpdatedAt = new DateTime(2025, 10, 3, 17, 56, 31, 321, DateTimeKind.Utc).AddTicks(8832)
+                        });
                 });
 
             modelBuilder.Entity("Procrastinator.Models.Quest", b =>
@@ -213,6 +272,12 @@ namespace Procrastinator.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<int?>("Advancement")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
@@ -220,28 +285,98 @@ namespace Procrastinator.Migrations
                     b.Property<int>("EstimatedTime")
                         .HasColumnType("integer");
 
-                    b.Property<bool>("IsAssigned")
+                    b.Property<Guid?>("HexAssignmentId")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsArchived")
                         .HasColumnType("boolean");
 
-                    b.Property<bool>("IsDone")
-                        .HasColumnType("boolean");
+                    b.Property<Guid>("PriorityId")
+                        .HasColumnType("uuid");
 
-                    b.Property<int>("Priority")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("StatusId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PriorityId");
+
+                    b.HasIndex("StatusId");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("Quests");
+                });
+
+            modelBuilder.Entity("Procrastinator.Models.Status", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Icon")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsArchived")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Statuses");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("17c07323-d5b4-4568-b773-de3487ff30b1"),
+                            Color = "#FFA500",
+                            CreatedAt = new DateTime(2025, 10, 3, 17, 56, 31, 321, DateTimeKind.Utc).AddTicks(8762),
+                            IsArchived = false,
+                            Name = "En attente",
+                            UpdatedAt = new DateTime(2025, 10, 3, 17, 56, 31, 321, DateTimeKind.Utc).AddTicks(8765)
+                        },
+                        new
+                        {
+                            Id = new Guid("2281c955-b3e1-49dc-be62-6a7912bb46b3"),
+                            Color = "#FBA500",
+                            CreatedAt = new DateTime(2025, 10, 3, 17, 56, 31, 321, DateTimeKind.Utc).AddTicks(8773),
+                            IsArchived = false,
+                            Name = "En cours",
+                            UpdatedAt = new DateTime(2025, 10, 3, 17, 56, 31, 321, DateTimeKind.Utc).AddTicks(8773)
+                        },
+                        new
+                        {
+                            Id = new Guid("6662dfc1-9c40-4d78-806f-34cd22e07023"),
+                            Color = "#FFF500",
+                            CreatedAt = new DateTime(2025, 10, 3, 17, 56, 31, 321, DateTimeKind.Utc).AddTicks(8776),
+                            IsArchived = false,
+                            Name = "Terminée",
+                            UpdatedAt = new DateTime(2025, 10, 3, 17, 56, 31, 321, DateTimeKind.Utc).AddTicks(8776)
+                        });
                 });
 
             modelBuilder.Entity("Procrastinator.Models.UserApp", b =>
@@ -257,6 +392,9 @@ namespace Procrastinator.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("text");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
@@ -267,6 +405,9 @@ namespace Procrastinator.Migrations
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<bool>("IsArchived")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -300,6 +441,9 @@ namespace Procrastinator.Migrations
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
@@ -376,24 +520,32 @@ namespace Procrastinator.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Procrastinator.Models.UserApp", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Quest");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Procrastinator.Models.Quest", b =>
                 {
+                    b.HasOne("Procrastinator.Models.Priority", "Priority")
+                        .WithMany()
+                        .HasForeignKey("PriorityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Procrastinator.Models.Status", "Status")
+                        .WithMany()
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Procrastinator.Models.UserApp", "User")
                         .WithMany("QuestList")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Priority");
+
+                    b.Navigation("Status");
 
                     b.Navigation("User");
                 });

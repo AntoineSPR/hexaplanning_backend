@@ -110,11 +110,11 @@ public class Factory : WebApplicationFactory<Program>, IAsyncLifetime
         {
             Title = "Test Quest",
             Description = "This is a test quest",
-            IsDone = false,
+            //IsDone = false,
             UserId = user.Id,
             EstimatedTime = 30,
-            Priority = QuestPriority.PRIMARY,
-            IsAssigned = false
+            //Priority = QuestPriority.PRIMARY,
+            //IsAssigned = false
         };
 
         var questResult = await dataContext.Quests.AddAsync(quest);

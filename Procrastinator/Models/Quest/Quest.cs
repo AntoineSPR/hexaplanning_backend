@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Procrastinator.Models
 {
@@ -7,13 +7,11 @@ namespace Procrastinator.Models
     {
         PRIMARY,
         SECONDARY,
-        TERTIARY
+        TERTIARY,
     }
-    public class Quest
-    {
-        [Key]
-        public Guid Id { get; set; }
 
+    public class Quest : BaseModel
+    {
         [Required]
         [StringLength(100)]
         public string Title { get; set; }
@@ -25,15 +23,19 @@ namespace Procrastinator.Models
 
         [ForeignKey(nameof(User))]
         public Guid UserId { get; set; }
+        public int? Advancement { get; set; }
 
         public int EstimatedTime { get; set; }
 
-        [EnumDataType(typeof(QuestPriority))]
-        public QuestPriority Priority { get; set; }
+        public Guid PriorityId { get; set; }
 
-        public bool IsDone { get; set; }
+        [ForeignKey(nameof(PriorityId))]
+        public Priority Priority { get; set; }
 
-        public bool IsAssigned { get; set; }
+        public Guid StatusId { get; set; }
+
+        [ForeignKey(nameof(StatusId))]
+        public Status Status { get; set; }
 
         public HexAssignment? HexAssignment { get; set; }
     }
