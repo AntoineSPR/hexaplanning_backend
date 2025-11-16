@@ -7,21 +7,53 @@ using Microsoft.IdentityModel.Tokens;
 using Procrastinator.Context;
 using Procrastinator.Models;
 using Procrastinator.Utilities;
+using Procrastinator.Models.UserApp;
+using Microsoft.AspNetCore.Http;
 
 namespace Procrastinator.Services
+
 {
     public class AuthService
+
+        public async Task<LoginResponseDTO?> RefreshToken(string refreshToken)
+        {
+            var tokenEntity = context.RefreshTokens.Include(r => r.User).FirstOrDefault(r => r.Token == refreshToken);
+            if (tokenEntity == null || !tokenEntity.IsActive)
+                return null;
+
+            // Revoke old token
+            tokenEntity.Revoked = DateTime.UtcNow;
+            tokenEntity.RevokedByIp = GetIpAddress();
+
+            // Generate new refresh token
+            var newRefreshToken = GenerateRefreshToken(GetIpAddress());
+            tokenEntity.User.RefreshTokens.Add(newRefreshToken);
+            context.Update(tokenEntity.User);
+            await context.SaveChangesAsync();
+
+            var userRoles = await userManager.GetRolesAsync(tokenEntity.User);
+
+            return new LoginResponseDTO
+            {
+                Token = await GenerateAccessTokenAsync(tokenEntity.User),
+                RefreshToken = newRefreshToken.Token,
+                User = tokenEntity.User.ToUserResponseDTO(userRoles.ToList()),
+            };
+        }
     {
-        private readonly DataContext context;
-        private readonly UserManager<UserApp> userManager;
+    private readonly DataContext context;
+    private readonly UserManager<UserApp> userManager;
+    private readonly IHttpContextAccessor httpContextAccessor;
 
         public AuthService(
             DataContext context,
-            UserManager<UserApp> userManager
+            UserManager<UserApp> userManager,
+            IHttpContextAccessor httpContextAccessor
         )
         {
             this.context = context;
             this.userManager = userManager;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<UserResponseDTO?> Register(UserCreateDTO model)
@@ -121,23 +153,29 @@ namespace Procrastinator.Services
             try
             {
                 var user = await userManager.FindByEmailAsync(model.Email);
-
                 if (user == null)
                 {
                     throw new Exception("User not found");
                 }
 
                 var result = await userManager.CheckPasswordAsync(user: user, password: model.Password);
-                if (!userManager.CheckPasswordAsync(user: user, password: model.Password).Result)
+                if (!result)
                 {
                     throw new Exception("Login failed");
                 }
 
                 var userRoles = await userManager.GetRolesAsync(user);
 
+                // Generate refresh token
+                var refreshToken = GenerateRefreshToken(GetIpAddress());
+                user.RefreshTokens.Add(refreshToken);
+                context.Update(user);
+                await context.SaveChangesAsync();
+
                 return new LoginResponseDTO
                 {
                     Token = await GenerateAccessTokenAsync(user),
+                    RefreshToken = refreshToken.Token,
                     User = user.ToUserResponseDTO(userRoles.ToList()),
                 };
             }
@@ -145,6 +183,27 @@ namespace Procrastinator.Services
             {
                 throw;
             }
+
+        private RefreshToken GenerateRefreshToken(string ipAddress)
+        {
+            var randomBytes = new byte[64];
+            using (var rng = System.Security.Cryptography.RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(randomBytes);
+            }
+            return new RefreshToken
+            {
+                Token = Convert.ToBase64String(randomBytes),
+                Expires = DateTime.UtcNow.AddDays(7),
+                Created = DateTime.UtcNow,
+                CreatedByIp = ipAddress
+            };
+        }
+
+        private string GetIpAddress()
+        {
+            return httpContextAccessor?.HttpContext?.Connection?.RemoteIpAddress?.ToString() ?? "127.0.0.1";
+        }
         }
 
         public async Task<string> GenerateAccessTokenAsync(UserApp user)

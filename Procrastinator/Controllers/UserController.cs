@@ -5,11 +5,27 @@ using Procrastinator.Models;
 using Procrastinator.Services;
 
 namespace Procrastinator.Controllers
+
+using Procrastinator.Models.UserApp;
 {
     [Route("[controller]")]
     [Authorize]
     [ApiController]
     public class UserController : ControllerBase
+
+        [AllowAnonymous]
+        [Route("refresh-token")]
+        [HttpPost]
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequestDTO model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await authService.RefreshToken(model.RefreshToken);
+            if (result == null)
+                return Unauthorized();
+            return Ok(result);
+        }
     {
 
         private readonly AuthService authService;

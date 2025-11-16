@@ -61,6 +61,7 @@ public partial class Program
         services.AddScoped<StatusService>();
         services.AddScoped<PriorityService>();
         services.AddScoped<SendMailService>();
+        // TODO : Changer en singleton (ou stocker en DB les tentatives de reset pwd)
 
         // Logger
         services.AddLogging(loggingBuilder =>

@@ -28,6 +28,8 @@ namespace Procrastinator.Services
                     if (DateTime.UtcNow - lastRequest < TimeSpan.FromMinutes(5)) return true;
                 }
                 _lastResetRequest[emailAddress] = DateTime.UtcNow;
+                // TODO : vider la liste _lastResetRequest de temps en temps pour éviter une croissance infinie
+                // Ou stocker dans la BDD
 
                 var smtpClient = new SmtpClient(Env.SMTP_HOST)
                 {

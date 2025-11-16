@@ -12,6 +12,8 @@ namespace Procrastinator.Models
         public string LastName { get; set; }
         public List<Quest> QuestList { get; set; }
 
+        public List<Procrastinator.Models.UserApp.RefreshToken> RefreshTokens { get; set; } = new();
+
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; set; } = DateTime.UtcNow;
         public bool IsArchived { get; set; }

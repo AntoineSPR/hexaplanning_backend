@@ -110,15 +110,13 @@ namespace Procrastinator.Context
             builder.Entity<Priority>().HasData(pri);
         }
 
-        // Accès aux tables :
-        public DbSet<UserApp> Users { get; set; }
-
-        public DbSet<Role> Roles { get; set; }
-
-        public DbSet<Quest> Quests { get; set; }
-
-        public DbSet<HexAssignment> HexAssignments { get; set; }
-        public DbSet<Status> Statuses { get; set; }
-        public DbSet<Priority> Priorities { get; set; }
+    // Accès aux tables :
+    public DbSet<UserApp> Users { get; set; }
+    public DbSet<Role> Roles { get; set; }
+    public DbSet<Quest> Quests { get; set; }
+    public DbSet<HexAssignment> HexAssignments { get; set; }
+    public DbSet<Status> Statuses { get; set; }
+    public DbSet<Priority> Priorities { get; set; }
+    public DbSet<Procrastinator.Models.UserApp.RefreshToken> RefreshTokens { get; set; }
     }
 }
