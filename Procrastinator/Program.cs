@@ -1,4 +1,3 @@
-
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,8 +36,7 @@ public partial class Program
 
                 var user = new UserApp
                 {
-                    FirstName = "antoine",
-                    LastName = "Simper",
+                    Name = "Antoine Simper",
                     UserName = "antoine.simper@gmail.com",
                     Email = "antoine.simper@gmail.com"
                 };
