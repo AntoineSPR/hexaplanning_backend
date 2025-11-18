@@ -7,9 +7,7 @@ namespace Procrastinator.Models
     public class UserApp : IdentityUser<Guid>, IArchivable, ICreatable, IUpdatable
     {
         [Required]
-        public string FirstName { get; set; }
-        [Required]
-        public string LastName { get; set; }
+        public string Name { get; set; }
         public List<Quest> QuestList { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
@@ -23,8 +21,7 @@ namespace Procrastinator.Models
             return new UserResponseDTO
             {
                 Email = Email ?? "",
-                FirstName = FirstName,
-                LastName = LastName,
+                Name = Name,
                 UserId = Id
             };
         }
@@ -34,8 +31,7 @@ namespace Procrastinator.Models
             return new UserResponseDTO
             {
                 Email = Email ?? "",
-                FirstName = FirstName,
-                LastName = LastName,
+                Name = Name,
                 Roles = roles,
                 UserId = Id
             };
