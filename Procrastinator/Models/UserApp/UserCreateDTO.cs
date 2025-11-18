@@ -13,10 +13,7 @@ namespace Procrastinator.Models
         public string Password { get; set; }
 
         [Required]
-        public string FirstName { get; set; }
-
-        [Required]
-        public string LastName { get; set; }
+        public string Name { get; set; }
 
         public UserApp ToUserApp()
         {
@@ -24,15 +21,13 @@ namespace Procrastinator.Models
             {
                 Email = Email,
                 UserName = Email,
-                FirstName = FirstName,
-                LastName = LastName
+                Name = Name
             };
         }
 
         public UserApp ToSimpleUser(UserApp user)
         {
-            user.FirstName = FirstName;
-            user.LastName = LastName;
+            user.Name = Name;
             return user;
         }
     }

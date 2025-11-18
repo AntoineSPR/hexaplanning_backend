@@ -32,8 +32,7 @@ namespace Procrastinator.Services
                     Email = email,
                     NormalizedEmail = email.ToUpper(),
                     NormalizedUserName = email.ToUpper(),
-                    FirstName = faker.Name.FirstName(),
-                    LastName = faker.Name.LastName(),
+                    Name = faker.Name.FullName(),
                     EmailConfirmed = true,
                     PasswordHash = "AQAAAAIAAYagAAAAEH23EZOdWWjTCZaC+rs1rjQ5IRxzpjCZ9yXP/A4m1GsUDenq3XRkY90WRswaWW32wQ=="
                 };

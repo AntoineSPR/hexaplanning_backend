@@ -17,7 +17,7 @@ namespace Procrastinator.Utilities
             return Environment.GetEnvironmentVariable(key) ?? string.Empty;
         }
 
-        public static string CONNECTION_STRING => GetEnv(nameof(CONNECTION_STRING), "Host=localhost;Port=5432;Database=procrastinator;Username=postgres;Password=postgres");
+        public static string CONNECTION_STRING => GetEnv(nameof(CONNECTION_STRING), "Host=localhost;Port=5432;Database=Procrastinator;Username=postgres;Password=admin;");
         public static string SMTP_HOST => GetEnv(nameof(SMTP_HOST), "");
         public static string SMTP_PORT => GetEnv(nameof(SMTP_PORT), "");
         public static string SMTP_EMAILFROM => GetEnv(nameof(SMTP_EMAILFROM), "");

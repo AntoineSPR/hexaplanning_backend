@@ -99,8 +99,7 @@ public class Factory : WebApplicationFactory<Program>, IAsyncLifetime
         // Créer l'utilisateur via UserManager
         var user = new UserApp
         {
-            FirstName = "Test",
-            LastName = "User",
+            Name = "Test User",
             Email = "user@gmail.com",
             UserName = "user@gmail.com",
             EmailConfirmed = true,
