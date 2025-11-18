@@ -10,7 +10,6 @@ namespace Procrastinator.Controllers
     [Route("[controller]")]
     [Authorize]
     [ApiController]
-    [CheckUser]
     public class PriorityController : ControllerBase
     {
         private readonly PriorityService priorityService;
@@ -24,6 +23,7 @@ namespace Procrastinator.Controllers
         /// Get all priorities (non-archived)
         /// </summary>
         /// <returns>List of priorities</returns>
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetAllPriorities()
         {
@@ -36,6 +36,7 @@ namespace Procrastinator.Controllers
         /// </summary>
         /// <param name="id">Priority ID</param>
         /// <returns>Priority details</returns>
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPriorityById(Guid id)
         {

@@ -10,7 +10,6 @@ namespace Procrastinator.Controllers
     [Route("[controller]")]
     [Authorize]
     [ApiController]
-    [CheckUser]
     public class StatusController : ControllerBase
     {
         private readonly StatusService statusService;
@@ -24,6 +23,7 @@ namespace Procrastinator.Controllers
         /// Get all statuses (non-archived)
         /// </summary>
         /// <returns>List of statuses</returns>
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetAllStatuses()
         {
@@ -36,6 +36,7 @@ namespace Procrastinator.Controllers
         /// </summary>
         /// <param name="id">Status ID</param>
         /// <returns>Status details</returns>
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetStatusById(Guid id)
         {

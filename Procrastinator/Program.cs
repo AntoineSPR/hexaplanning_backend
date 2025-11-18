@@ -1,3 +1,4 @@
+
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -266,9 +267,6 @@ public partial class Program
             // Store assets in the wwwroot folder
             app.UseStaticFiles();
 
-            // Enable authentication
-            app.UseAuthentication();
-
             // Enable developer exception page if in development environment
             if (app.Environment.IsDevelopment())
             {
@@ -289,11 +287,14 @@ public partial class Program
             // Enable Cross-Origin Resource Sharing (CORS)
             app.UseCors();
 
+            // Enable authentication
+            app.UseAuthentication();
+
             // Enable authorization
             app.UseAuthorization();
 
-        // Map controllers
-        app.MapControllers();
+            // Map controllers
+            app.MapControllers();
         }
     #endregion
 }
