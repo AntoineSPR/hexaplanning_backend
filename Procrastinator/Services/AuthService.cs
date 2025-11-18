@@ -128,7 +128,7 @@ namespace Procrastinator.Services
                 }
 
                 var result = await userManager.CheckPasswordAsync(user: user, password: model.Password);
-                if (!userManager.CheckPasswordAsync(user: user, password: model.Password).Result)
+                if (!result)
                 {
                     throw new Exception("Login failed");
                 }
