@@ -84,7 +84,7 @@ namespace Procrastinator.Context
                 {
                     Id = HardCode.STATUS_COMPLETED_ID,
                     Name = "Terminée",
-                    Color = "#004da5",
+                    Color = "#37007f",
                 },
             };
             builder.Entity<Status>().HasData(statuses);
