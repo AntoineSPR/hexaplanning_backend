@@ -36,5 +36,27 @@ namespace Procrastinator.Utilities
                 return 7;
             }
         }
+        public static int ACCESS_TOKEN_VALIDITY_MINUTES
+        {
+            get
+            {
+                if (int.TryParse(GetEnv(nameof(ACCESS_TOKEN_VALIDITY_MINUTES)), out var minutes))
+                {
+                    return minutes;
+                }
+                return 15;
+            }
+        }
+        public static int REFRESH_TOKEN_VALIDITY_DAYS
+        {
+            get
+            {
+                if (int.TryParse(GetEnv(nameof(REFRESH_TOKEN_VALIDITY_DAYS)), out var days))
+                {
+                    return days;
+                }
+                return 30;
+            }
+        }
     }
 }

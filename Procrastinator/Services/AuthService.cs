@@ -1,5 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -138,12 +139,88 @@ namespace Procrastinator.Services
                 return new LoginResponseDTO
                 {
                     Token = await GenerateAccessTokenAsync(user),
+                    RefreshToken = await GenerateRefreshTokenAsync(user),
                     User = user.ToUserResponseDTO(userRoles.ToList()),
                 };
             }
             catch
             {
                 throw;
+            }
+        }
+
+        public async Task<string> GenerateRefreshTokenAsync(UserApp user)
+        {
+            var refreshToken = new RefreshToken
+            {
+                Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
+                UserId = user.Id,
+                ExpiresAt = DateTime.UtcNow.AddDays(Env.REFRESH_TOKEN_VALIDITY_DAYS),
+            };
+
+            context.RefreshTokens.Add(refreshToken);
+            await context.SaveChangesAsync();
+
+            return refreshToken.Token;
+        }
+
+        public async Task<LoginResponseDTO> RefreshAsync(string refreshToken)
+        {
+            var storedToken = await context.RefreshTokens
+                .Include(r => r.User)
+                .FirstOrDefaultAsync(r => r.Token == refreshToken);
+
+            if (storedToken == null)
+            {
+                throw new UnauthorizedAccessException("Refresh token invalide");
+            }
+
+            if (storedToken.RevokedAt != null)
+            {
+                // The token has already been rotated away (or explicitly revoked via logout) and is
+                // being presented again - this is a reuse/theft signal, not a normal expiry. Revoke
+                // every currently-active token for this user to force a fresh login everywhere.
+                var activeTokens = await context.RefreshTokens
+                    .Where(r => r.UserId == storedToken.UserId && r.RevokedAt == null)
+                    .ToListAsync();
+                foreach (var token in activeTokens)
+                {
+                    token.RevokedAt = DateTime.UtcNow;
+                }
+                await context.SaveChangesAsync();
+
+                throw new UnauthorizedAccessException("Refresh token déjà utilisé");
+            }
+
+            if (storedToken.ExpiresAt <= DateTime.UtcNow)
+            {
+                // Simply expired, not reused - no mass revocation, just reject this one.
+                throw new UnauthorizedAccessException("Refresh token expiré");
+            }
+
+            storedToken.RevokedAt = DateTime.UtcNow;
+
+            var userRoles = await userManager.GetRolesAsync(storedToken.User);
+
+            var response = new LoginResponseDTO
+            {
+                Token = await GenerateAccessTokenAsync(storedToken.User),
+                RefreshToken = await GenerateRefreshTokenAsync(storedToken.User),
+                User = storedToken.User.ToUserResponseDTO(userRoles.ToList()),
+            };
+
+            await context.SaveChangesAsync();
+
+            return response;
+        }
+
+        public async Task RevokeRefreshTokenAsync(string refreshToken)
+        {
+            var storedToken = await context.RefreshTokens.FirstOrDefaultAsync(r => r.Token == refreshToken);
+            if (storedToken != null && storedToken.RevokedAt == null)
+            {
+                storedToken.RevokedAt = DateTime.UtcNow;
+                await context.SaveChangesAsync();
             }
         }
 
@@ -176,7 +253,7 @@ namespace Procrastinator.Services
                     issuer: Env.API_BACK_URL,
                     audience: Env.API_BACK_URL,
                     claims: authClaims,
-                    expires: DateTime.Now.AddDays(Env.TOKEN_VALIDITY_DAYS),
+                    expires: DateTime.Now.AddMinutes(Env.ACCESS_TOKEN_VALIDITY_MINUTES),
                     signingCredentials: credentials
                 );
 

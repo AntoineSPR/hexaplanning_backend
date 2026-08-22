@@ -119,6 +119,36 @@ namespace Procrastinator.Controllers
             }
         }
 
+        [AllowAnonymous]
+        [EnableCors]
+        [Route("refresh")]
+        [HttpPost]
+        public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequestDTO model)
+        {
+            try
+            {
+                if (!ModelState.IsValid) { throw new Exception("Refresh failed"); }
+
+                var result = await authService.RefreshAsync(model.RefreshToken);
+
+                return Ok(result);
+            }
+            catch
+            {
+                return new StatusCodeResult(StatusCodes.Status401Unauthorized);
+            }
+        }
+
+        [AllowAnonymous]
+        [EnableCors]
+        [Route("logout")]
+        [HttpPost]
+        public async Task<IActionResult> Logout([FromBody] RefreshTokenRequestDTO model)
+        {
+            await authService.RevokeRefreshTokenAsync(model.RefreshToken);
+            return Ok();
+        }
+
         [Route("email/{email}")]
         [HttpGet]
         public async Task<ActionResult<UserResponseDTO?>> GetUserByEmail([FromRoute] string email)
