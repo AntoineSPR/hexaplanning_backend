@@ -65,20 +65,26 @@ namespace Procrastinator.Context
                 new Status()
                 {
                     Id = HardCode.STATUS_WAITING_ID,
-                    Name = "En attente",
-                    Color = "#FFA500",
+                    Name = "À accomplir",
+                    Color = "#9E9E9E",
                 },
                 new Status()
                 {
                     Id = HardCode.STATUS_IN_PROGRESS_ID,
                     Name = "En cours",
-                    Color = "#FBA500",
+                    Color = "#B87FED",
+                },
+                new Status()
+                {
+                    Id = HardCode.STATUS_ON_HOLD_ID,
+                    Name = "En attente",
+                    Color = "#ff9500",
                 },
                 new Status()
                 {
                     Id = HardCode.STATUS_COMPLETED_ID,
                     Name = "Terminée",
-                    Color = "#FFF500",
+                    Color = "#004da5",
                 },
             };
             builder.Entity<Status>().HasData(statuses);

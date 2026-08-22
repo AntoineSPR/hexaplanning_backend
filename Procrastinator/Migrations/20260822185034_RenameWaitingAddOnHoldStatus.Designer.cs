@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Procrastinator.Context;
@@ -11,9 +12,11 @@ using Procrastinator.Context;
 namespace Procrastinator.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20260822185034_RenameWaitingAddOnHoldStatus")]
+    partial class RenameWaitingAddOnHoldStatus
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -155,14 +158,14 @@ namespace Procrastinator.Migrations
                         new
                         {
                             Id = new Guid("63a2a3ac-442e-4e4c-ad91-1443122b5a6a"),
-                            ConcurrencyStamp = "469dfd82-57f7-4a85-a186-c63cb81585a2",
+                            ConcurrencyStamp = "eabd3aee-38b2-4e89-8877-f83cbfc78b49",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = new Guid("12ccaa16-0d50-491e-8157-ec1b133cf120"),
-                            ConcurrencyStamp = "7aef43da-7d19-4e0a-b36a-1e03ec9c510c",
+                            ConcurrencyStamp = "fa7a7cee-0d8c-4d82-aaf9-4220f14c8b5f",
                             Name = "Client",
                             NormalizedName = "CLIENT"
                         });
@@ -242,32 +245,32 @@ namespace Procrastinator.Migrations
                             Id = new Guid("6662dfc1-9c40-4d78-806f-34cd22e07023"),
                             BorderColor = "#E28A2B",
                             Color = "#E28A2B",
-                            CreatedAt = new DateTime(2026, 8, 22, 19, 22, 45, 264, DateTimeKind.Utc).AddTicks(9099),
+                            CreatedAt = new DateTime(2026, 8, 22, 18, 50, 33, 875, DateTimeKind.Utc).AddTicks(9848),
                             Icon = "primary",
                             IsArchived = false,
                             Name = "Quête principale",
-                            UpdatedAt = new DateTime(2026, 8, 22, 19, 22, 45, 264, DateTimeKind.Utc).AddTicks(9099)
+                            UpdatedAt = new DateTime(2026, 8, 22, 18, 50, 33, 875, DateTimeKind.Utc).AddTicks(9849)
                         },
                         new
                         {
                             Id = new Guid("2281c955-b3e1-49dc-be62-6a7912bb46b3"),
                             BorderColor = "#D3D3D3",
                             Color = "#8A2BE2",
-                            CreatedAt = new DateTime(2026, 8, 22, 19, 22, 45, 264, DateTimeKind.Utc).AddTicks(9109),
+                            CreatedAt = new DateTime(2026, 8, 22, 18, 50, 33, 875, DateTimeKind.Utc).AddTicks(9853),
                             Icon = "secondary",
                             IsArchived = false,
                             Name = "Quête secondaire",
-                            UpdatedAt = new DateTime(2026, 8, 22, 19, 22, 45, 264, DateTimeKind.Utc).AddTicks(9109)
+                            UpdatedAt = new DateTime(2026, 8, 22, 18, 50, 33, 875, DateTimeKind.Utc).AddTicks(9853)
                         },
                         new
                         {
                             Id = new Guid("17c07323-d5b4-4568-b773-de3487ff30b1"),
                             Color = "#797676",
-                            CreatedAt = new DateTime(2026, 8, 22, 19, 22, 45, 264, DateTimeKind.Utc).AddTicks(9114),
+                            CreatedAt = new DateTime(2026, 8, 22, 18, 50, 33, 875, DateTimeKind.Utc).AddTicks(9855),
                             Icon = "tertiary",
                             IsArchived = false,
                             Name = "Quête tertiaire",
-                            UpdatedAt = new DateTime(2026, 8, 22, 19, 22, 45, 264, DateTimeKind.Utc).AddTicks(9115)
+                            UpdatedAt = new DateTime(2026, 8, 22, 18, 50, 33, 875, DateTimeKind.Utc).AddTicks(9855)
                         });
                 });
 
@@ -394,37 +397,37 @@ namespace Procrastinator.Migrations
                         {
                             Id = new Guid("17c07323-d5b4-4568-b773-de3487ff30b1"),
                             Color = "#9E9E9E",
-                            CreatedAt = new DateTime(2026, 8, 22, 19, 22, 45, 264, DateTimeKind.Utc).AddTicks(9040),
+                            CreatedAt = new DateTime(2026, 8, 22, 18, 50, 33, 875, DateTimeKind.Utc).AddTicks(9742),
                             IsArchived = false,
                             Name = "À accomplir",
-                            UpdatedAt = new DateTime(2026, 8, 22, 19, 22, 45, 264, DateTimeKind.Utc).AddTicks(9043)
+                            UpdatedAt = new DateTime(2026, 8, 22, 18, 50, 33, 875, DateTimeKind.Utc).AddTicks(9745)
                         },
                         new
                         {
                             Id = new Guid("2281c955-b3e1-49dc-be62-6a7912bb46b3"),
                             Color = "#B87FED",
-                            CreatedAt = new DateTime(2026, 8, 22, 19, 22, 45, 264, DateTimeKind.Utc).AddTicks(9060),
+                            CreatedAt = new DateTime(2026, 8, 22, 18, 50, 33, 875, DateTimeKind.Utc).AddTicks(9812),
                             IsArchived = false,
                             Name = "En cours",
-                            UpdatedAt = new DateTime(2026, 8, 22, 19, 22, 45, 264, DateTimeKind.Utc).AddTicks(9060)
+                            UpdatedAt = new DateTime(2026, 8, 22, 18, 50, 33, 875, DateTimeKind.Utc).AddTicks(9812)
                         },
                         new
                         {
                             Id = new Guid("b34563d0-1ae5-42f9-950a-beffa4e27dce"),
-                            Color = "#ff9500",
-                            CreatedAt = new DateTime(2026, 8, 22, 19, 22, 45, 264, DateTimeKind.Utc).AddTicks(9063),
+                            Color = "#E2A72B",
+                            CreatedAt = new DateTime(2026, 8, 22, 18, 50, 33, 875, DateTimeKind.Utc).AddTicks(9816),
                             IsArchived = false,
                             Name = "En attente",
-                            UpdatedAt = new DateTime(2026, 8, 22, 19, 22, 45, 264, DateTimeKind.Utc).AddTicks(9063)
+                            UpdatedAt = new DateTime(2026, 8, 22, 18, 50, 33, 875, DateTimeKind.Utc).AddTicks(9816)
                         },
                         new
                         {
                             Id = new Guid("6662dfc1-9c40-4d78-806f-34cd22e07023"),
-                            Color = "#004da5",
-                            CreatedAt = new DateTime(2026, 8, 22, 19, 22, 45, 264, DateTimeKind.Utc).AddTicks(9066),
+                            Color = "#4CAF7D",
+                            CreatedAt = new DateTime(2026, 8, 22, 18, 50, 33, 875, DateTimeKind.Utc).AddTicks(9818),
                             IsArchived = false,
                             Name = "Terminée",
-                            UpdatedAt = new DateTime(2026, 8, 22, 19, 22, 45, 264, DateTimeKind.Utc).AddTicks(9066)
+                            UpdatedAt = new DateTime(2026, 8, 22, 18, 50, 33, 875, DateTimeKind.Utc).AddTicks(9819)
                         });
                 });
 
