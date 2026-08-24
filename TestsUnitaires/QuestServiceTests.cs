@@ -62,7 +62,6 @@ namespace TestsUnitaires
                 Title = "New Quest",
                 Description = "Description",
                 EstimatedTime = 10,
-                PriorityId = Guid.NewGuid(),
                 StatusId = Guid.NewGuid()
             };
 
@@ -85,7 +84,6 @@ namespace TestsUnitaires
                 Title = "Old Title",
                 Description = "Old Description",
                 EstimatedTime = 5,
-                PriorityId = Guid.NewGuid(),
                 StatusId = Guid.NewGuid()
             };
             await _context.Quests.AddAsync(quest);
@@ -97,7 +95,6 @@ namespace TestsUnitaires
                 Title = "Updated Title",
                 Description = "Updated Description",
                 EstimatedTime = 15,
-                PriorityId = quest.PriorityId,
                 StatusId = quest.StatusId
             };
 
@@ -117,7 +114,6 @@ namespace TestsUnitaires
                 Title = "Updated Title",
                 Description = "Updated Description",
                 EstimatedTime = 15,
-                PriorityId = Guid.NewGuid(),
                 StatusId = Guid.NewGuid()
             };
 

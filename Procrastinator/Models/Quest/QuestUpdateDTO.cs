@@ -14,7 +14,8 @@ namespace Procrastinator.Models
 
         public int EstimatedTime { get; set; }
 
-        public Guid PriorityId { get; set; }
+        public Guid? ThemeId { get; set; }
+        public bool IsPrimaryTheme { get; set; }
         public Guid StatusId { get; set; }
         public int? Advancement { get; set; }
 
@@ -27,7 +28,8 @@ namespace Procrastinator.Models
             existingQuest.Title = Title;
             existingQuest.Description = Description;
             existingQuest.EstimatedTime = EstimatedTime;
-            existingQuest.PriorityId = PriorityId;
+            existingQuest.ThemeId = ThemeId;
+            existingQuest.IsPrimaryTheme = IsPrimaryTheme;
             existingQuest.StatusId = StatusId;
             existingQuest.Advancement = Advancement;
             existingQuest.HexAssignment = HexAssignment != null ? HexAssignment.ToHexAssignment() : null;

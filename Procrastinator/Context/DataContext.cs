@@ -42,6 +42,12 @@ namespace Procrastinator.Context
                 .WithOne(q => q.QuestGroup)
                 .HasForeignKey(q => q.QuestGroupId);
 
+            builder
+                .Entity<Theme>()
+                .HasMany(t => t.Quests)
+                .WithOne(q => q.Theme)
+                .HasForeignKey(q => q.ThemeId);
+
             // Il ne peut y avoir qu'un seul hexAssignment correspondant à chaque jeu de coordonnées, par utilisateur :
             //builder.Entity<HexAssignment>()
             //    .HasIndex(h => new { h.Q, h.R, h.S, h.UserId })
@@ -72,56 +78,24 @@ namespace Procrastinator.Context
                 {
                     Id = HardCode.STATUS_WAITING_ID,
                     Name = "À accomplir",
-                    Color = "#9E9E9E",
                 },
                 new Status()
                 {
                     Id = HardCode.STATUS_IN_PROGRESS_ID,
                     Name = "En cours",
-                    Color = "#B87FED",
                 },
                 new Status()
                 {
                     Id = HardCode.STATUS_ON_HOLD_ID,
                     Name = "En attente",
-                    Color = "#ff9500",
                 },
                 new Status()
                 {
                     Id = HardCode.STATUS_COMPLETED_ID,
                     Name = "Terminée",
-                    Color = "#37007f",
                 },
             };
             builder.Entity<Status>().HasData(statuses);
-
-            var pri = new List<Priority>()
-            {
-                new Priority()
-                {
-                    Id = HardCode.PRIORITY_PRIMARY_ID,
-                    Name = "Quête principale",
-                    Color = "#E28A2B",
-                    Icon = "primary",
-                    BorderColor = "#E28A2B"
-                },
-                new Priority()
-                {
-                    Id = HardCode.PRIORITY_SECONDARY_ID,
-                    Name = "Quête secondaire",
-                    Color = "#8A2BE2",
-                    Icon = "secondary",
-                    BorderColor = "#D3D3D3"
-                },
-                new Priority()
-                {
-                    Id = HardCode.PRIORITY_TERTIARY_ID,
-                    Name = "Quête tertiaire",
-                    Color = "#797676",
-                    Icon = "tertiary",
-                },
-            };
-            builder.Entity<Priority>().HasData(pri);
         }
 
         // Accès aux tables :
@@ -133,7 +107,7 @@ namespace Procrastinator.Context
 
         public DbSet<HexAssignment> HexAssignments { get; set; }
         public DbSet<Status> Statuses { get; set; }
-        public DbSet<Priority> Priorities { get; set; }
+        public DbSet<Theme> Themes { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<QuestGroup> QuestGroups { get; set; }
     }

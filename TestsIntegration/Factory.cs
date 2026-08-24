@@ -126,7 +126,6 @@ public class Factory : WebApplicationFactory<Program>, IAsyncLifetime
             Description = "This is a test quest",
             UserId = createdUser.Id,
             EstimatedTime = 30,
-            PriorityId = HardCode.PRIORITY_TERTIARY_ID,
             StatusId = HardCode.STATUS_WAITING_ID,
         };
 

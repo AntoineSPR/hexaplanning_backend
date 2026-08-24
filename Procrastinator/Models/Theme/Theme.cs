@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Procrastinator.Models
 {
-    public class QuestGroup : BaseModelOption
+    public class Theme : BaseModelOption
     {
         public string Color { get; set; }
 

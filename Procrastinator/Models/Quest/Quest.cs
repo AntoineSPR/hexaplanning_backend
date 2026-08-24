@@ -3,13 +3,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Procrastinator.Models
 {
-    public enum QuestPriority
-    {
-        PRIMARY,
-        SECONDARY,
-        TERTIARY,
-    }
-
     public class Quest : BaseModel
     {
         [Required]
@@ -27,10 +20,12 @@ namespace Procrastinator.Models
 
         public int EstimatedTime { get; set; }
 
-        public Guid PriorityId { get; set; }
+        public Guid? ThemeId { get; set; }
 
-        [ForeignKey(nameof(PriorityId))]
-        public Priority Priority { get; set; }
+        [ForeignKey(nameof(ThemeId))]
+        public Theme? Theme { get; set; }
+
+        public bool IsPrimaryTheme { get; set; }
 
         public Guid StatusId { get; set; }
 

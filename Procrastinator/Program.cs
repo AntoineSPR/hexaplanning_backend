@@ -59,7 +59,7 @@ public partial class Program
         services.AddScoped<QuestGroupService>();
         services.AddScoped<FixturesService>();
         services.AddScoped<StatusService>();
-        services.AddScoped<PriorityService>();
+        services.AddScoped<ThemeService>();
         services.AddScoped<SendMailService>();
 
         // Logger

@@ -56,7 +56,6 @@ namespace Procrastinator.Services
                     {
                         Title = faker.Lorem.Sentence(3, 5),
                         Description = faker.Lorem.Paragraph(),
-                        //Priority = (QuestPriority)faker.Random.Int(0, 2),
                         UserId = user.Id
                     };
                     //_context.Quests.Add(quest);
