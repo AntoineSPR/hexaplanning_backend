@@ -56,6 +56,7 @@ public partial class Program
         services.AddScoped<UserService>();
         services.AddScoped<QuestService>();
         services.AddScoped<HexAssignmentService>();
+        services.AddScoped<QuestGroupService>();
         services.AddScoped<FixturesService>();
         services.AddScoped<StatusService>();
         services.AddScoped<PriorityService>();

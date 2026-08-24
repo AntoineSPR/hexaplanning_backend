@@ -36,6 +36,12 @@ namespace Procrastinator.Context
 
             builder.Entity<RefreshToken>().HasIndex(r => r.Token).IsUnique();
 
+            builder
+                .Entity<QuestGroup>()
+                .HasMany(g => g.Quests)
+                .WithOne(q => q.QuestGroup)
+                .HasForeignKey(q => q.QuestGroupId);
+
             // Il ne peut y avoir qu'un seul hexAssignment correspondant à chaque jeu de coordonnées, par utilisateur :
             //builder.Entity<HexAssignment>()
             //    .HasIndex(h => new { h.Q, h.R, h.S, h.UserId })
@@ -129,5 +135,6 @@ namespace Procrastinator.Context
         public DbSet<Status> Statuses { get; set; }
         public DbSet<Priority> Priorities { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<QuestGroup> QuestGroups { get; set; }
     }
 }

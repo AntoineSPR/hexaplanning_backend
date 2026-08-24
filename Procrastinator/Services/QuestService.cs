@@ -75,11 +75,44 @@ namespace Procrastinator.Services
                 return null;
             }
 
+            var previousGroupId = quest.QuestGroupId;
+
             updatedQuest.UpdateQuest(quest); // Update the existing quest with new values referenced by 'quest'
 
             await context.SaveChangesAsync();
 
+            // Whether this quest left its group (cleared) or moved to a different one, the group
+            // it left behind is deleted outright once it has no members left, rather than
+            // lingering as an empty row - the same cleanup CreateQuestGroupAsync does when it
+            // reassigns quests away from their previous group.
+            if (previousGroupId.HasValue && previousGroupId != quest.QuestGroupId)
+            {
+                await DeleteGroupIfEmptyAsync(previousGroupId.Value);
+            }
+
             return QuestDTO.ToQuestDTO(quest);
+        }
+
+        // A group that's lost its last member no longer has any reason to exist - see the two
+        // call sites above/in QuestGroupService.CreateQuestGroupAsync for why a quest's group can
+        // change out from under it without going through QuestGroupService.DeleteQuestGroupAsync's
+        // own explicit-delete path.
+        private async Task DeleteGroupIfEmptyAsync(Guid groupId)
+        {
+            var stillHasMembers = await context.Quests.AnyAsync(q => q.QuestGroupId == groupId);
+            if (stillHasMembers)
+            {
+                return;
+            }
+
+            var group = await context.QuestGroups.FindAsync(groupId);
+            if (group == null)
+            {
+                return;
+            }
+
+            context.QuestGroups.Remove(group);
+            await context.SaveChangesAsync();
         }
 
         public async Task<bool> DeleteQuestAsync(Guid id, Guid userId)

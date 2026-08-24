@@ -20,6 +20,8 @@ namespace Procrastinator.Models
 
         public HexAssignmentDTO? HexAssignment { get; set; }
 
+        public Guid? QuestGroupId { get; set; }
+
         public void UpdateQuest(Quest existingQuest)
         {
             existingQuest.Title = Title;
@@ -29,6 +31,7 @@ namespace Procrastinator.Models
             existingQuest.StatusId = StatusId;
             existingQuest.Advancement = Advancement;
             existingQuest.HexAssignment = HexAssignment != null ? HexAssignment.ToHexAssignment() : null;
+            existingQuest.QuestGroupId = QuestGroupId;
         }
 
     }

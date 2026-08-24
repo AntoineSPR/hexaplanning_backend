@@ -38,5 +38,10 @@ namespace Procrastinator.Models
         public Status Status { get; set; }
 
         public HexAssignment? HexAssignment { get; set; }
+
+        public Guid? QuestGroupId { get; set; }
+
+        [ForeignKey(nameof(QuestGroupId))]
+        public QuestGroup? QuestGroup { get; set; }
     }
 }
