@@ -108,6 +108,7 @@ namespace Procrastinator.Context
         public DbSet<HexAssignment> HexAssignments { get; set; }
         public DbSet<Status> Statuses { get; set; }
         public DbSet<Theme> Themes { get; set; }
+        public DbSet<FavoriteColor> FavoriteColors { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<QuestGroup> QuestGroups { get; set; }
     }

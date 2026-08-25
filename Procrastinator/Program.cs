@@ -60,6 +60,7 @@ public partial class Program
         services.AddScoped<FixturesService>();
         services.AddScoped<StatusService>();
         services.AddScoped<ThemeService>();
+        services.AddScoped<FavoriteColorService>();
         services.AddScoped<SendMailService>();
 
         // Logger
