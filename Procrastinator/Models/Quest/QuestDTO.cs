@@ -7,6 +7,11 @@ namespace Procrastinator.Models
     {
         public Guid? Id { get; set; }
 
+        // Read-only: set by BaseModel at entity creation, never accepted from client input (not on
+        // QuestCreateDTO/QuestUpdateDTO) - exposed so the frontend has a real timestamp to sort
+        // "date added" by, instead of relying on array/insertion order.
+        public DateTime CreatedAt { get; set; }
+
         [Required]
         [StringLength(100)]
         public string Title { get; set; }
@@ -49,6 +54,7 @@ namespace Procrastinator.Models
             return new QuestDTO
             {
                 Id = quest.Id,
+                CreatedAt = quest.CreatedAt,
                 Title = quest.Title,
                 Description = quest.Description,
                 UserId = quest.UserId,
