@@ -16,6 +16,9 @@ namespace Procrastinator.Models
         public Guid StatusId { get; set; }
         public int? Advancement { get; set; }
 
+        public Guid? ThemeId { get; set; }
+        public bool IsPrimaryTheme { get; set; }
+
         public Quest ToQuest(Guid userId)
         {
             return new Quest
@@ -25,7 +28,9 @@ namespace Procrastinator.Models
                 UserId = userId,
                 EstimatedTime = EstimatedTime,
                 StatusId = StatusId,
-                Advancement = Advancement
+                Advancement = Advancement,
+                ThemeId = ThemeId,
+                IsPrimaryTheme = IsPrimaryTheme
             };
         }
     }
