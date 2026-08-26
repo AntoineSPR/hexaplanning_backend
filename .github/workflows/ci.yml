@@ -16,9 +16,9 @@ jobs:
         with:
           dotnet-version: "8.0.x"
       - name: Restore dependencies
-        run: dotnet restore ./Procrastinator/
+        run: dotnet restore ./Hexaplanning/
       - name: Build
-        run: dotnet build ./Procrastinator/ --no-restore
+        run: dotnet build ./Hexaplanning/ --no-restore
       - name: Lancer les tests unitaires
         run: dotnet test --no-build --verbosity normal ./TestsUnitaires
 
@@ -33,8 +33,8 @@ jobs:
         with:
           dotnet-version: "8.0.x"
       - name: Restore dependencies
-        run: dotnet restore ./Procrastinator/
+        run: dotnet restore ./Hexaplanning/
       - name: Build
-        run: dotnet build ./Procrastinator/ --no-restore
+        run: dotnet build ./Hexaplanning/ --no-restore
       - name: Lancer les tests d'intégration
         run: dotnet test --no-build --verbosity detailed  ./TestsIntegration

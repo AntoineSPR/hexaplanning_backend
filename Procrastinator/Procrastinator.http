@@ -1,6 +1,0 @@
-@Procrastinator_HostAddress = http://localhost:5115
-
-GET {{Procrastinator_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

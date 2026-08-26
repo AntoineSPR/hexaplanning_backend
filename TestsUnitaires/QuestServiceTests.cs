@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using Procrastinator.Context;
-using Procrastinator.Models;
-using Procrastinator.Services;
-using Procrastinator.Utilities;
+using Hexaplanning.Context;
+using Hexaplanning.Models;
+using Hexaplanning.Services;
+using Hexaplanning.Utilities;
 
 namespace TestsUnitaires
 {

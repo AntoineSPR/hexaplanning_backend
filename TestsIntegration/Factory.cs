@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestPlatform.TestHost;
-using Procrastinator.Context;
-using Procrastinator.Models;
-using Procrastinator.Utilities;
+using Hexaplanning.Context;
+using Hexaplanning.Models;
+using Hexaplanning.Utilities;
 using Testcontainers.PostgreSql;
 
 namespace TestsIntegration;

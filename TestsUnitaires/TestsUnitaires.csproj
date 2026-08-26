@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Procrastinator\Procrastinator.csproj" />
+    <ProjectReference Include="..\Hexaplanning\Hexaplanning.csproj" />
   </ItemGroup>
 
   <ItemGroup>
