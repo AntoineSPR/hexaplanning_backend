@@ -15,6 +15,7 @@ namespace Hexaplanning.Models
         [Required]
         public DateTime ExpiresAt { get; set; }
         public DateTime? RevokedAt { get; set; }
+        public string? ReplacedByToken { get; set; }
 
         [NotMapped]
         public bool IsActive => RevokedAt == null && ExpiresAt > DateTime.UtcNow;

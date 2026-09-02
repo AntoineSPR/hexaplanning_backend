@@ -13,6 +13,11 @@ namespace Hexaplanning.Services
 {
     public class AuthService
     {
+        // A refresh token that gets replayed shortly after it was rotated away is usually a benign
+        // race (e.g. a mobile tab reloaded by the OS while a previous refresh call was still in
+        // flight), not theft - RefreshAsync uses this window to tell the two apart.
+        private static readonly TimeSpan RefreshReuseGracePeriod = TimeSpan.FromSeconds(30);
+
         private readonly DataContext context;
         private readonly UserManager<UserApp> userManager;
 
@@ -27,26 +32,26 @@ namespace Hexaplanning.Services
 
         public async Task<UserResponseDTO?> Register(UserCreateDTO model)
         {
-            // Vérifier si l'adresse e-mail est déjà utilisée
+            // Vï¿½rifier si l'adresse e-mail est dï¿½jï¿½ utilisï¿½e
             bool isEmailAlreadyUsed = await IsEmailAlreadyUsedAsync(model.Email);
             if (isEmailAlreadyUsed)
             {
-                throw new Exception("Email déjà utilisé");
+                throw new Exception("Email dï¿½jï¿½ utilisï¿½");
             }
 
             try
             {
-                // Créer un nouvel utilisateur en utilisant les données du modèle et la base de données contextuelle
+                // Crï¿½er un nouvel utilisateur en utilisant les donnï¿½es du modï¿½le et la base de donnï¿½es contextuelle
                 UserApp newUser = model.ToUserApp();
 
-                // Tenter de créer un nouvel utilisateur avec le gestionnaire d'utilisateurs
+                // Tenter de crï¿½er un nouvel utilisateur avec le gestionnaire d'utilisateurs
                 IdentityResult result = await userManager.CreateAsync(newUser, model.Password);
 
 
-                // Vérifier si la création de l'utilisateur a échoué
+                // Vï¿½rifier si la crï¿½ation de l'utilisateur a ï¿½chouï¿½
                 if (!result.Succeeded)
                 {
-                    // Si la création a échoué, ajouter les erreurs au modèle d'état et renvoyer une exception
+                    // Si la crï¿½ation a ï¿½chouï¿½, ajouter les erreurs au modï¿½le d'ï¿½tat et renvoyer une exception
                     var errors = Enumerable.Empty<string>();
                     foreach (var error in result.Errors)
                     {
@@ -55,7 +60,7 @@ namespace Hexaplanning.Services
                     }
                 }
 
-                // Tenter d'ajouter l'utilisateur aux rôles spécifiés dans le modèle
+                // Tenter d'ajouter l'utilisateur aux rï¿½les spï¿½cifiï¿½s dans le modï¿½le
                 IdentityResult roleResult = await userManager.AddToRolesAsync(
                     user: newUser,
                     roles: ["Client"]
@@ -97,7 +102,7 @@ namespace Hexaplanning.Services
                 var user = UserService.GetUserFromClaim(userPrincipal, context);
                 if (user is null)
                 {
-                    throw new Exception("Utilisateur non trouvé");
+                    throw new Exception("Utilisateur non trouvï¿½");
                 }
 
                 var result = await userManager.ChangePasswordAsync(user, passwordData.CurrentPassword, passwordData.NewPassword);
@@ -177,9 +182,32 @@ namespace Hexaplanning.Services
 
             if (storedToken.RevokedAt != null)
             {
+                var isWithinGracePeriod = DateTime.UtcNow - storedToken.RevokedAt.Value < RefreshReuseGracePeriod;
+                if (isWithinGracePeriod && storedToken.ReplacedByToken != null)
+                {
+                    var successor = await context.RefreshTokens
+                        .Include(r => r.User)
+                        .FirstOrDefaultAsync(r => r.Token == storedToken.ReplacedByToken);
+
+                    if (successor != null && successor.IsActive)
+                    {
+                        // Benign race, not theft: this token was already rotated a moment ago (e.g. two
+                        // requests refreshed around the same time). Resync onto the token that already
+                        // won instead of nuking every device's session.
+                        var successorRoles = await userManager.GetRolesAsync(successor.User);
+                        return new LoginResponseDTO
+                        {
+                            Token = await GenerateAccessTokenAsync(successor.User),
+                            RefreshToken = successor.Token,
+                            User = successor.User.ToUserResponseDTO(successorRoles.ToList()),
+                        };
+                    }
+                }
+
                 // The token has already been rotated away (or explicitly revoked via logout) and is
-                // being presented again - this is a reuse/theft signal, not a normal expiry. Revoke
-                // every currently-active token for this user to force a fresh login everywhere.
+                // being presented again outside any benign race window - this is a reuse/theft signal,
+                // not a normal expiry. Revoke every currently-active token for this user to force a
+                // fresh login everywhere.
                 var activeTokens = await context.RefreshTokens
                     .Where(r => r.UserId == storedToken.UserId && r.RevokedAt == null)
                     .ToListAsync();
@@ -189,23 +217,25 @@ namespace Hexaplanning.Services
                 }
                 await context.SaveChangesAsync();
 
-                throw new UnauthorizedAccessException("Refresh token déjà utilisé");
+                throw new UnauthorizedAccessException("Refresh token dï¿½jï¿½ utilisï¿½");
             }
 
             if (storedToken.ExpiresAt <= DateTime.UtcNow)
             {
                 // Simply expired, not reused - no mass revocation, just reject this one.
-                throw new UnauthorizedAccessException("Refresh token expiré");
+                throw new UnauthorizedAccessException("Refresh token expirï¿½");
             }
 
             storedToken.RevokedAt = DateTime.UtcNow;
 
             var userRoles = await userManager.GetRolesAsync(storedToken.User);
+            var newRefreshToken = await GenerateRefreshTokenAsync(storedToken.User);
+            storedToken.ReplacedByToken = newRefreshToken;
 
             var response = new LoginResponseDTO
             {
                 Token = await GenerateAccessTokenAsync(storedToken.User),
-                RefreshToken = await GenerateRefreshTokenAsync(storedToken.User),
+                RefreshToken = newRefreshToken,
                 User = storedToken.User.ToUserResponseDTO(userRoles.ToList()),
             };
 
@@ -253,7 +283,7 @@ namespace Hexaplanning.Services
                     issuer: Env.API_BACK_URL,
                     audience: Env.API_BACK_URL,
                     claims: authClaims,
-                    expires: DateTime.Now.AddMinutes(Env.ACCESS_TOKEN_VALIDITY_MINUTES),
+                    expires: DateTime.UtcNow.AddMinutes(Env.ACCESS_TOKEN_VALIDITY_MINUTES),
                     signingCredentials: credentials
                 );
 
@@ -280,7 +310,7 @@ namespace Hexaplanning.Services
                 var user = await userManager.FindByEmailAsync(model.Email);
                 if (user == null)
                 {
-                    throw new Exception("Utilisateur non trouvé");
+                    throw new Exception("Utilisateur non trouvï¿½");
                 }
 
                 var result = await userManager.ResetPasswordAsync(user, model.Token, model.NewPassword);
@@ -288,7 +318,7 @@ namespace Hexaplanning.Services
                 if (!result.Succeeded)
                 {
                     var errors = string.Join(", ", result.Errors.Select(e => e.Description));
-                    throw new Exception($"Erreur lors de la réinitialisation : {errors}");
+                    throw new Exception($"Erreur lors de la rï¿½initialisation : {errors}");
                 }
 
                 return true;
