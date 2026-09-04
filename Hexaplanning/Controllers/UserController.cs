@@ -77,6 +77,28 @@ namespace Hexaplanning.Controllers
 
         }
 
+        [EnableCors]
+        [Route("name")]
+        [HttpPut]
+        public async Task<IActionResult> UpdateName([FromBody] UpdateNameDTO model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var result = await authService.UpdateName(model, HttpContext.User);
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
 
         [EnableCors]
         [Route("change-password")]

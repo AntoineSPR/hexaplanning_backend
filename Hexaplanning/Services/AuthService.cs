@@ -95,6 +95,33 @@ namespace Hexaplanning.Services
                 throw;
             }
         }
+
+        // Dedicated to renaming only - Update above requires a full UserCreateDTO (email +
+        // password, both [Required]) even though it only ever applies the Name field, which would
+        // make a plain rename either resend the user's real password over the wire or send a junk
+        // one just to satisfy validation.
+        public async Task<UserResponseDTO> UpdateName(UpdateNameDTO model, ClaimsPrincipal UserPrincipal)
+        {
+            try
+            {
+                var user = UserService.GetUserFromClaim(UserPrincipal, context);
+                if (user is null)
+                {
+                    throw new Exception("Account not found");
+                }
+
+                user.Name = model.Name;
+
+                await context.SaveChangesAsync();
+
+                return user.ToUserResponseDTO();
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         public async Task<bool> ChangePassword(ChangePasswordDTO passwordData, ClaimsPrincipal userPrincipal)
         {
             try
