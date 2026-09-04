@@ -15,16 +15,19 @@ namespace Hexaplanning.Controllers
         private readonly AuthService authService;
         private readonly UserService userService;
         private readonly SendMailService mailService;
+        private readonly ILogger<UserController> logger;
 
         public UserController(
             AuthService authService,
             UserService userService,
-            SendMailService mailService
+            SendMailService mailService,
+            ILogger<UserController> logger
         )
         {
             this.authService = authService;
             this.userService = userService;
             this.mailService = mailService;
+            this.logger = logger;
         }
 
         [AllowAnonymous]
@@ -89,7 +92,7 @@ namespace Hexaplanning.Controllers
 
                 var result = await authService.ChangePassword(passwordData, HttpContext.User);
 
-                return Ok(new { message = "Mot de passe modifié avec succès" });
+                return Ok(new { message = "Mot de passe modifiï¿½ avec succï¿½s" });
             }
             catch (Exception e)
             {
@@ -133,8 +136,20 @@ namespace Hexaplanning.Controllers
 
                 return Ok(result);
             }
-            catch
+            catch (UnauthorizedAccessException ex)
             {
+                // Expected rejection (expired/reused/unknown refresh token) - worth a trace to
+                // correlate client-reported disconnections with which case actually fired, but not
+                // an application error.
+                logger.LogWarning("Refresh token rejected: {Reason}", ex.Message);
+                return new StatusCodeResult(StatusCodes.Status401Unauthorized);
+            }
+            catch (Exception ex)
+            {
+                // Anything else here is a bug, not a normal auth outcome - it was previously
+                // swallowed into the same bare 401 as the expected case above, making it
+                // indistinguishable from the client and invisible in the logs.
+                logger.LogError(ex, "Unexpected error while refreshing token");
                 return new StatusCodeResult(StatusCodes.Status401Unauthorized);
             }
         }
@@ -173,7 +188,7 @@ namespace Hexaplanning.Controllers
 
                 await mailService.SendPasswordResetEmail(email);
 
-                return Ok(new { message = "Si votre email existe, un lien de réinitialisation a été envoyé." });
+                return Ok(new { message = "Si votre email existe, un lien de rï¿½initialisation a ï¿½tï¿½ envoyï¿½." });
             }
             catch (Exception e)
             {
@@ -196,7 +211,7 @@ namespace Hexaplanning.Controllers
 
                 await authService.ResetPassword(model);
 
-                return Ok(new { message = "Mot de passe réinitialisé avec succès." });
+                return Ok(new { message = "Mot de passe rï¿½initialisï¿½ avec succï¿½s." });
             }
             catch (Exception e)
             {
@@ -219,7 +234,7 @@ namespace Hexaplanning.Controllers
 
         //        await mailService.SendEmail(mail);
 
-        //        return Ok(new { message = "Email envoyé." });
+        //        return Ok(new { message = "Email envoyï¿½." });
         //    }
         //    catch (Exception e)
         //    {
